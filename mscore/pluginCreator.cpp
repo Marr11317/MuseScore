@@ -18,6 +18,7 @@
 #include "helpBrowser.h"
 #include "preferences.h"
 #include "libmscore/score.h"
+#include <QToolBar>
 
 namespace Ms {
 
@@ -78,6 +79,13 @@ PluginCreator::PluginCreator(QWidget* parent)
       actionUndo->setShortcut(QKeySequence(QKeySequence::Undo));
       actionRedo->setIcon(*icons[int(Icons::redo_ICON)]);
       actionRedo->setShortcut(QKeySequence(QKeySequence::Redo));
+      
+      QToolBar* pluginTools = addToolBar(tr("Plugin operations"));
+      pluginTools->setObjectName("PluginOperations");
+      pluginTools->toolButtonStyle = Qt::ToolButtonTextOnly;
+      actionRun->setShortcut(QKeySequence(tr("Ctrl+R"));
+      actionRun->setShortcut(QKeySequence(tr("Ctrl+Q"));
+      
       if (qApp->layoutDirection() == Qt::LayoutDirection::LeftToRight) {
             editTools->addAction(actionUndo);
             editTools->addAction(actionRedo);

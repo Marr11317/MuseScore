@@ -12,10 +12,10 @@
 //=============================================================================
 
 #include "pluginManager.h"
-#include "shortcutcapturedialog.h"
-#include "musescore.h"
-#include "libmscore/xml.h"
-#include "preferences.h"
+#include "../shortcutcapturedialog.h"
+#include "../musescore.h"
+#include "../libmscore/xml.h"
+#include "../preferences.h"
 
 
 namespace Ms {
@@ -27,13 +27,8 @@ namespace Ms {
 PluginManager::PluginManager(QWidget* parent)
    : QDialog(parent)
       {
-      setObjectName("PluginManager");
-      setupUi(this);
-      setWindowFlags(this->windowFlags() & ~Qt::WindowContextHelpButtonHint);
-      connect(definePluginShortcut, SIGNAL(clicked()), SLOT(definePluginShortcutClicked()));
-      connect(clearPluginShortcut, SIGNAL(clicked()), SLOT(clearPluginShortcutClicked()));
-      connect(reloadPlugins, SIGNAL(clicked()), SLOT(reloadPluginsClicked()));
-      readSettings();
+      if (objectName().isEmpty())
+            setObjectName("PluginManager");
       }
 
 //---------------------------------------------------------
@@ -42,20 +37,28 @@ PluginManager::PluginManager(QWidget* parent)
 
 void PluginManager::init()
       {
-      //
+      //This is done here because it is only needed if a request for show is done.
+      setupUi(this);
+      setWindowFlags(this->windowFlags() & ~Qt::WindowContextHelpButtonHint);
+      connect(definePluginShortcut, SIGNAL(clicked()), SLOT(definePluginShortcutClicked()));
+      connect(clearPluginShortcut,  SIGNAL(clicked()), SLOT(clearPluginShortcutClicked()));
+      connect(reloadPlugins,        SIGNAL(clicked()), SLOT(reloadPluginsClicked()));
+      readSettings();
+      //----------------------------------------------------
       // initialize local shortcut table
       //    we need a deep copy to be able to rewind all
       //    changes on "Abort"
-      //
+      //----------------------------------------------------
       qDeleteAll(localShortcuts);
       localShortcuts.clear();
-      foreach(const Shortcut* s, Shortcut::shortcuts())
+      for(const Shortcut* s: Shortcut::shortcuts())
             localShortcuts[s->key()] = new Shortcut(*s);
       shortcutsChanged = false;
       loadList(false);
       connect(pluginListWidget, SIGNAL(itemChanged(QListWidgetItem*)), SLOT(pluginLoadToggled(QListWidgetItem*)));
       connect(pluginListWidget, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
               SLOT(pluginListWidgetItemChanged(QListWidgetItem*, QListWidgetItem*)));
+
 }
 
 //---------------------------------------------------------
@@ -124,7 +127,7 @@ void PluginManager::writePluginList()
       XmlWriter xml(0, &f);
       xml.header();
       xml.stag("museScore version=\"" MSC_VERSION "\"");
-      foreach(const PluginDescription& d, _pluginList) {
+      for(const PluginDescription& d: _pluginList) {
             xml.stag("Plugin");
             xml.tag("path", d.path);
             xml.tag("load", d.load);
@@ -157,7 +160,7 @@ static void updatePluginList(QList<QString>& pluginPathList, const QString& plug
             if (fi.isFile()) {
                   if (path.endsWith(".qml")) {
                         bool alreadyInList = false;
-                        foreach (const PluginDescription& p, pluginList) {
+                        for (const PluginDescription& p: pluginList) {
                               if (p.path == path) {
                                     alreadyInList = true;
                                     break;
@@ -191,7 +194,7 @@ void PluginManager::updatePluginList(bool forceRefresh)
             engine->clearComponentCache(); //TODO: Check this doesn't have unwanted side effects.
             }
 
-      foreach(QString pluginPath, pluginPathList) {
+      for(QString pluginPath: pluginPathList) {
             Ms::updatePluginList(pluginPathList, pluginPath, _pluginList);
             }
       //remove non existing files
@@ -252,7 +255,7 @@ void PluginManager::accept()
       {
       if (shortcutsChanged) {
             shortcutsChanged = false;
-            foreach(const Shortcut* s, localShortcuts) {
+            for(const Shortcut* s: localShortcuts) {
                   Shortcut* os = Shortcut::getShortcut(s->key());
                   if (os) {
                         if (!os->compareKeys(*s))

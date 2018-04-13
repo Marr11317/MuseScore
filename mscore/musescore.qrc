@@ -162,5 +162,13 @@
         <file>data/icons/clef-bass.svg</file>
         <file>data/solid_note_head.dat</file>
         <file>data/icons/edit-swap.svg</file>
+        <file>data/icons/plugins.svg</file>
+        <file>data/icons/document-close.svg</file>
+        <file>data/MuseScorePlugins_Full.svg</file>
+        <file>data/MuseScorePlugins_Logo.svg</file>
+        <file>data/icons/equal.svg</file>
+        <file>data/icons/media-playback-stop.svg</file>
+        <file>data/icons/minus.svg</file>
+        <file>data/icons/plus.svg</file>
     </qresource>
 </RCC>

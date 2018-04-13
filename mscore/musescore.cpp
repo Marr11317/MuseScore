@@ -71,12 +71,12 @@
 #include "inspector/inspector.h"
 #ifdef OMR
 #include "omrpanel.h"
-#endif
+#endif //OMR
 #include "shortcut.h"
 #ifdef SCRIPT_INTERFACE
-#include "pluginCreator.h"
-#include "pluginManager.h"
-#endif
+#include "scriptInterface/pluginCreator.h"
+#include "scriptInterface/pluginManager.h"
+#endif //SCRIPT_INTERFACE
 #include "helpBrowser.h"
 #include "drumtools.h"
 #include "editstafftype.h"
@@ -955,7 +955,7 @@ MuseScore::MuseScore()
       setFocusPolicy(Qt::NoFocus);
 
 #ifdef SCRIPT_INTERFACE
-      pluginManager = new PluginManager(0);
+      pluginManager = new PluginManager(nullptr);
 #endif
 
       if (!converterMode && !pluginMode) {
@@ -1597,7 +1597,6 @@ MuseScore::MuseScore()
       menuPlugins->addAction(getAction("plugin-manager"));
 
       a = getAction("plugin-creator");
-      a->setCheckable(true);
       menuPlugins->addAction(a);
 
       menuPlugins->addSeparator();
@@ -3829,9 +3828,11 @@ void MuseScore::writeSettings()
             debugger->writeSettings();
 
 #ifdef SCRIPT_INTERFACE
-      if (_pluginCreator)
-            _pluginCreator->writeSettings();
+      if (_pluginCreator) {
+            delete _pluginCreator;
+            }
 #endif
+
       if (synthControl)
             synthControl->writeSettings();
       settings.setValue("synthControlVisible", synthControl && synthControl->isVisible());
@@ -4681,21 +4682,14 @@ void MuseScore::showPianoKeyboard(bool on)
 //   showPluginCreator
 //---------------------------------------------------------
 
-void MuseScore::showPluginCreator(QAction* a)
+void MuseScore::showPluginCreator()
       {
 #ifdef SCRIPT_INTERFACE
-      bool on = a->isChecked();
-      if (on) {
-            if (_pluginCreator == 0) {
-                  _pluginCreator = new PluginCreator(0);
-                  connect(_pluginCreator, SIGNAL(closed(bool)), a, SLOT(setChecked(bool)));
-                  }
-            _pluginCreator->show();
-            }
-      else {
-            if (_pluginCreator)
-                  _pluginCreator->hide();
-            }
+      if (!_pluginCreator)
+            _pluginCreator = new PluginCreator(nullptr);
+      _pluginCreator->setVisible(true);
+      _pluginCreator->raise();
+      _pluginCreator->activateWindow();
 #endif
       }
 
@@ -4706,7 +4700,8 @@ void MuseScore::showPluginCreator(QAction* a)
 void MuseScore::showPluginManager()
       {
 #ifdef SCRIPT_INTERFACE
-      pluginManager->init();
+      if (!pluginManager->layout()) //this means init has not been called.
+            pluginManager->init();
       pluginManager->show();
 #endif
       }
@@ -5426,7 +5421,7 @@ void MuseScore::cmd(QAction* a, const QString& cmd)
       else if (cmd == "toggle-piano")
             showPianoKeyboard(a->isChecked());
       else if (cmd == "plugin-creator")
-            showPluginCreator(a);
+            showPluginCreator();
       else if (cmd == "plugin-manager")
             showPluginManager();
       else if(cmd == "resource-manager"){

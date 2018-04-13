@@ -33,8 +33,15 @@ include_directories(
       )
 
 if (SCRIPT_INTERFACE)
-      set (SCRIPT_FILES mscorePlugins pluginCreator.cpp qmledit.cpp pluginManager.cpp)
-      set (SCRIPT_UI   pluginCreator.ui pluginManager.ui)
+      set (SCRIPT_FILES  scriptInterface/mscorePlugins.cpp
+                         scriptInterface/pluginCreator.cpp
+                         scriptInterface/qmledit.cpp
+                         scriptInterface/pluginManager.cpp
+                         scriptInterface/console.cpp)
+      set (SCRIPT_UI   scriptInterface/pluginCreator.ui
+                       scriptInterface/pluginManager.ui
+                       scriptInterface/aboutPlugins.ui
+                       scriptInterface/aboutPlugins.ui)
 endif (SCRIPT_INTERFACE)
 
 QT5_WRAP_UI (ui_headers
@@ -42,7 +49,7 @@ QT5_WRAP_UI (ui_headers
       measuresdialog.ui pagesettings.ui mixer.ui playpanel.ui prefsdialog.ui measureproperties.ui
       textpalette.ui  timedialog.ui symboldialog.ui  shortcutcapturedialog.ui  editdrumset.ui
       editstaff.ui timesigproperties.ui
-      instrwizard.ui timesigwizard.ui newwizard.ui aboutbox.ui aboutmusicxmlbox.ui
+      instrwizard.ui timesigwizard.ui newwizard.ui
       transposedialog.ui excerptsdialog.ui  stafftext.ui tupletdialog.ui
       articulation.ui metaedit.ui palette.ui selectdialog.ui selectnotedialog.ui
       synthcontrol.ui splitstaff.ui cellproperties.ui keyedit.ui selectinstr.ui
@@ -53,6 +60,7 @@ QT5_WRAP_UI (ui_headers
       startcenter.ui scorePreview.ui scoreBrowser.ui
       logindialog.ui uploadscoredialog.ui breaksdialog.ui
       toolbarEditor.ui
+      aboutbox.ui aboutmusicxmlbox.ui
 
       importmidi/importmidi_panel.ui
 

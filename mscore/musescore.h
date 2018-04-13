@@ -207,7 +207,7 @@ class MuseScoreApplication : public QtSingleApplication {
       QStringList paths;
       MuseScoreApplication(const QString& id, int &argc, char **argv)
          : QtSingleApplication(id, argc, argv) {
-            };
+            }
       virtual bool event(QEvent *ev) override;
       };
 
@@ -276,7 +276,7 @@ class MuseScore : public QMainWindow, public MuseScoreCore {
       MeasuresDialog* measuresDialog       { 0 };
       InsertMeasuresDialog* insertMeasuresDialog { 0 };
       MasterPalette* masterPalette         { 0 };
-      PluginCreator* _pluginCreator        { 0 };
+      PluginCreator* _pluginCreator        { nullptr };
       PluginManager* pluginManager         { 0 };
       SelectionWindow* selectionWindow     { 0 };
 
@@ -568,7 +568,7 @@ class MuseScore : public QMainWindow, public MuseScoreCore {
       TextTools* textTools();
       void showDrumTools(const Drumset*, Staff*);
       void updateDrumTools(const Drumset* ds);
-      void showPluginCreator(QAction*);
+      void showPluginCreator();
       void showPluginManager();
 
 //      void updateTabNames();

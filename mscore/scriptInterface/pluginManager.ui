@@ -16,6 +16,10 @@
   <property name="windowTitle">
    <string>Plugin Manager</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>:/data/icons/png/Plugins_empty.png</normaloff>:/data/icons/png/Plugins_empty.png</iconset>
+  </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="1">
     <widget class="QFrame" name="frame">
@@ -94,6 +98,12 @@
         <property name="readOnly">
          <bool>true</bool>
         </property>
+        <property name="placeholderText">
+         <string>No description</string>
+        </property>
+        <property name="openExternalLinks">
+         <bool>true</bool>
+        </property>
        </widget>
       </item>
       <item row="2" column="2">
@@ -161,6 +171,16 @@ This will re-evaluate all plugins, picking up any changes that may have occurred
      </layout>
     </widget>
    </item>
+   <item row="1" column="1">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="0">
     <widget class="QListWidget" name="pluginListWidget">
      <property name="sizePolicy">
@@ -180,16 +200,6 @@ This will re-evaluate all plugins, picking up any changes that may have occurred
      </property>
      <property name="sortingEnabled">
       <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0" colspan="2">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<!-- Généré par Microsoft Visio 11.0, SVG Export, v1.0 plugins.svg Noir -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events"
+		xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="1.74539in" height="1.96506in"
+		viewBox="0 0 125.668 141.484" xml:space="preserve" color-interpolation-filters="sRGB" class="st5">
+	<v:documentProperties v:langID="3084" v:metric="true" v:viewMarkup="false">
+		<v:userDefs>
+			<v:ud v:nameU="msvNoAutoConnect" v:val="VT0(1):26"/>
+		</v:userDefs>
+	</v:documentProperties>
+
+	<style type="text/css">
+	<![CDATA[
+		.st1 {fill:#3b3f45;stroke:none;stroke-linecap:butt;stroke-width:1.5}
+		.st2 {fill:#3b3f45;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:1.5}
+		.st3 {fill:#3b3f45;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.25}
+		.st4 {fill:#3b3f45;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+		.st5 {fill:none;fill-rule:evenodd;font-size:12px;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+	]]>
+	</style>
+
+	<g v:mID="9" v:index="2" v:groupContext="foregroundPage">
+		<title>Noir</title>
+		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="8.50394"
+				v:shadowOffsetY="-8.50394" v:shadowType="1"/>
+		<g id="group1-1" transform="translate(2.83465,-0.708661)" v:mID="1" v:groupContext="group">
+			<title>Feuille.1</title>
+			<g id="group3-2" transform="translate(50.6993,-30.1815)" v:mID="3" v:groupContext="group">
+				<title>Feuille.3</title>
+				<g id="group4-3" v:mID="4" v:groupContext="group">
+					<title>Feuille.4</title>
+					<g id="shape5-4" v:mID="5" v:groupContext="shape" transform="translate(38.9528,-20.9058)">
+						<title>Feuille.5</title>
+						<path d="M0.03 141.48 C2.54 138.89 4.28 135.83 4.62 132.43 C4.61 114.52 4.6 96.62 4.59 78.72 C12.03 85.91
+									 20.38 93.22 23.05 102.81 C24.79 110.63 22.11 118.61 18.73 125.85 C18.1 129.94 25.41 129.4 25.15
+									 125.55 C29.01 116.07 31.15 105.31 26.61 95.71 C21.02 83.46 9.48 73.66 5.51 60.8 C4.71 58.48
+									 4.51 56.07 4.52 53.67 C4.33 52.62 3.05 52.17 1.9 52.26 C-0.75 53.15 0.21 55.9 0.03 57.78 C0.03
+									 78.87 0.03 99.97 0.03 121.06 L0.03 121.06 L0.03 141.48 Z" class="st1"/>
+					</g>
+				</g>
+				<g id="shape6-6" v:mID="6" v:groupContext="shape" transform="translate(145.011,101.992) rotate(90)">
+					<title>Polygone - arête</title>
+					<v:userDefs>
+						<v:ud v:nameU="visVersion" v:val="VT0(14):26"/>
+					</v:userDefs>
+					<path d="M1.64 141.48 L21.48 141.48 A2.83465 2.83465 -180 0 0 23.93 140.07 L33.86 122.88 A2.83465 2.83465 -180
+								 0 0 33.86 120.05 L23.93 102.86 A2.83465 2.83465 -180 0 0 21.48 101.44 L1.64 101.44 A2.83465 2.83465
+								 -180 0 0 -0.82 102.86 L-10.74 120.05 A2.83465 2.83465 -180 0 0 -10.74 122.88 L-0.82 140.07 A2.83465
+								 2.83465 -180 0 0 1.64 141.48 Z" class="st2"/>
+				</g>
+			</g>
+			<g id="group9-8" v:mID="9" v:groupContext="group">
+				<title>Feuille.9</title>
+				<g id="shape2-9" v:mID="2" v:groupContext="shape">
+					<title>Feuille.2</title>
+					<path d="M62.56 37.25 L62.61 37.27 A2.7354 2.7354 0 0 1 64.22 39.29 L66.35 50.91 A2.83465 2.83465 0 0 1 66.2
+								 52.47 L66.2 52.47 A2.4466 2.4466 0 0 1 65.16 53.68 L44.4 65.77 A2.83465 2.83465 -180 0 0 43 68.22
+								 L43 99.78 A2.83465 2.83465 -180 0 0 44.41 102.23 L71.94 118.16 A2.83465 2.83465 -180 0 0 74.78 118.17
+								 L95.19 106.4 A2.83465 2.83465 0 0 1 97.11 106.07 L97.42 106.12 A2.83465 2.83465 0 0 1 98.86 106.84
+								 L108.28 115.6 A2.83465 2.83465 0 0 1 109.19 117.68 L109.19 117.88 A2.83465 2.83465 0 0 1 107.76
+								 120.34 L80.02 136.25 A2.83465 2.83465 0 0 1 78.61 136.63 L78.09 136.63 A2.83465 2.83465 0 0 1 76.86
+								 136.35 L48.73 122.86 A2.83465 2.83465 -180 0 0 46.1 122.96 L14.29 141.11 A2.83465 2.83465 0 0 1
+								 12.89 141.48 L2.84 141.48 A2.83465 2.83465 0 0 1 0 138.65 L0 107.57 A2.79003 2.79003 0 0 1 0.39
+								 106.15 L0.39 106.14 A2.83465 2.83465 0 0 1 1.42 105.13 L29.17 89.13 A2.83465 2.83465 -180 0 0 30.59
+								 86.68 L30.59 55.84 A2.61989 2.61989 0 0 1 30.9 54.6 L30.9 54.6 A2.28824 2.28824 0 0 1 31.77 53.7
+								 L60.03 37.4 A2.83465 2.83465 0 0 1 62.56 37.25 Z" class="st3"/>
+				</g>
+				<g id="shape8-11" v:mID="8" v:groupContext="shape" transform="translate(0.00282021,-0.00183992)">
+					<title>Feuille.8</title>
+					<path d="M0 137.01 L0 141.48 L6.01 141.48 L0 137.01 Z" class="st4"/>
+				</g>
+			</g>
+		</g>
+	</g>
+</svg>

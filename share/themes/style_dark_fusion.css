@@ -1,45 +1,75 @@
-*:disabled {
- color: gray
-}
+/* Dark-fusion-style stylesheet.*/
 
-QGroupBox {
-  font-weight: bold;
-}
+/* Global */
+/************************************************/
+*:disabled { color: gray; }
 
+/*Set all the checkboxes in menus (besides actions),
+ * pushButtons, and views (treeView, listView, ...).
+ * There must be an image assigned to ::indicator:checked
+ * to be able to style it. It looks like the default checkmark
+ * image is removed whenever you try to style the checkbox.*/
+*::indicator {
+ background: lightgray;
+ border-radius: 2px;
+ margin-right: 2px;
+}
+*::indicator:checked { image: url(:/data/icons/object-select.svg); }
+*::indicator:hover { background: gray; }
+
+/* Views */
+/************************************************/
+
+/* Mainly in midi import */
+QTableView { border: none; }
+
+/* Sets all view items to have their text color black when the item is selected. */
+QListView::item:selected { color: black; }
+QListView::item:hover { background-color: #202020; color: white }
+QListView::indicator { margin: 2px; }
+
+QGroupBox { font-weight: bold; }
 QGroupBox::title {
- subcontrol-origin: margin; subcontrol-position: top left; padding: 5px 5px;
+ subcontrol-origin:margin;
+ subcontrol-position: top left;
+ padding: 5px 5px;
 }
 
+/* Menus */
+/************************************************/
+QMenuBar::item:selected, QMenu::item:selected { color: white; background-color: #202020; }
+QMenu { background-color: #525252; }
+
+/* Dock Widgets */
+/************************************************/
 QDockWidget {
  border: 1px solid lightgray;
  titlebar-close-icon: url(:/data/icons/png/window-close.png);
  titlebar-normal-icon: url(:/data/icons/png/window-float.png);
 }
-
-QTabBar::close-button {
- image: url(:/data/icons/png/window-close.png);
+QDockWidget::close-button:hover, QDockWidget::float-button:hover,
+QDockWidget::close-button:pressed, QDockWidget::float-button:pressed {
+ border: 1px solid rgb(59, 63, 69);
+ border-radius: 2px;
 }
+QDockWidget::close-button:pressed, QDockWidget::float-button:pressed { padding: 1px -1px -1px 1px; }
 
-QTabBar::close-button:hover {
- image: url(:/data/icons/png/window-close-hover.png);
-}
+/* Tabs */
+/************************************************/
+QTabBar::close-button { image: url(:/data/icons/png/window-close.png); }
+QTabBar::close-button:hover { image: url(:/data/icons/png/window-close-hover.png); }
+QTabBar::close-button:pressed { padding: 1px -1px -1px 1px; }
 
-QToolButton#palette {
- border: none;
-}
-
-QToolButton#title {
- border: none;
-}
+/* Buttons */
+/************************************************/
+QToolButton:hover { background-color: rgba(50, 50, 50, 25%) }
+QToolButton#palette { border: none; }
+QToolButton#title { border: none; }
+/* Toolbar voice selector */
+QToolButton#voice:checked, QToolButton#voice:pressed { color: white; }
 
 /* staff text properties */
 QToolButton[voice1="true"]:checked, QToolButton[voice1="true"]:pressed { color: white; background: $voice1-bgcolor; }
 QToolButton[voice2="true"]:checked, QToolButton[voice2="true"]:pressed { color: white; background: $voice2-bgcolor; }
 QToolButton[voice3="true"]:checked, QToolButton[voice3="true"]:pressed { color: white; background: $voice3-bgcolor; }
 QToolButton[voice4="true"]:checked, QToolButton[voice4="true"]:pressed { color: white; background: $voice4-bgcolor; }
-
-/* Toolbar voice selector */
-QToolButton#voice:checked, QToolButton#voice:pressed { color: white; }
-
-/* Mainly in midi import */
-QTableView { border: none; }

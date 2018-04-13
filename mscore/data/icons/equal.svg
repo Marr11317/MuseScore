@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<!-- Généré par Microsoft Visio 11.0, SVG Export, v1.0 equal.svg Page 1 -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events"
+		xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="0.142741in" height="0.125326in"
+		viewBox="0 0 10.2774 9.02347" xml:space="preserve" color-interpolation-filters="sRGB" class="st2">
+	<v:documentProperties v:langID="1033" v:metric="true"/>
+
+	<style type="text/css">
+	<![CDATA[
+		.st1 {fill:#3b3f45;stroke:none;stroke-linecap:butt;stroke-width:0.749999}
+		.st2 {fill:none;fill-rule:evenodd;font-size:12px;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+	]]>
+	</style>
+
+	<g v:mID="0" v:index="1" v:groupContext="foregroundPage">
+		<title>Page 1</title>
+		<v:pageProperties v:drawingScale="1" v:pageScale="1" v:drawingUnits="19" v:shadowOffsetX="8.99999"
+				v:shadowOffsetY="-8.99999"/>
+		<g id="shape1-1" v:mID="1" v:groupContext="shape" transform="translate(10.6878,1.62437) rotate(90)">
+			<title>Shape</title>
+			<path d="M0 9.02 L1.93 9.02 L1.93 2.26 L0 2.26 L0 9.02 ZM3.87 2.26 L3.87 9.02 L5.8 9.02 L5.8 2.26 L3.87 2.26 Z"
+					class="st1"/>
+		</g>
+	</g>
+</svg>

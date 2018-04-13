@@ -47,7 +47,7 @@ class PluginManager : public QDialog, public Ui::PluginManager {
       void readSettings();
       void loadList(bool forceRefresh);
 
-      virtual void closeEvent(QCloseEvent*);
+      virtual void closeEvent(QCloseEvent*) override;
       virtual void accept();
 
    private slots:

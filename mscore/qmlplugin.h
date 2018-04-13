@@ -132,5 +132,5 @@ class QmlPlugin : public QQuickItem {
 
 
 } // namespace Ms
-#endif
-#endif
+#endif //SCRIPT_INTERFACE
+#endif //__QMLPLUGIN_H__

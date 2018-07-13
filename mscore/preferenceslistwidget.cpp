@@ -22,6 +22,7 @@
 namespace Ms {
 
 
+
 PreferencesListWidget::PreferencesListWidget(QWidget* parent)
       : QTreeWidget(parent)
       {
@@ -37,8 +38,55 @@ PreferencesListWidget::PreferencesListWidget(QWidget* parent)
       setAllColumnsShowFocus(true);
       }
 
+QTreeWidgetItem* PreferencesListWidget::findChildByName(QTreeWidgetItem* parent, QString name, int column)
+      {
+      for (int childNum = 0; childNum < parent->childCount(); ++childNum) {
+            QTreeWidgetItem* child = parent->child(childNum);
+            if (child->text(column) == name) {
+                  return child;
+            }
+      }
+      return nullptr;
+      }
+
 void PreferencesListWidget::loadPreferences()
       {
+      QTreeWidgetItem* currentParent = parent;
+
+      // iterate over all the preferences.
+      for (QString path : preferences.allPreferences().keys()) {
+            Preference* pref = preferences.allPreferences().value(key);
+            if(!pref->showInAdvancedList())
+                  continue;
+
+            // iterate over the directories of the preferences.
+            QStringList dirs = lines.at(path).split("/");
+            for (int dirNumber = 0; dirNumber < dirs.count(); ++dirNumber) {
+                  QString currentDir = dirs.at(dirNumber);
+                  // check if child already exists.
+                  QTreeWidgetItem* child = findChildByName(currentParent, currentDir, 0);
+                  // if doesn't exist, appendChild. if exist, current parent becomes child.
+                  if (!child) {
+                        // if it's not a "directory" but it's a file, then just change it to the corresponding preferenceItem.
+                        if (dirNumber == dirs.count() - 1) {
+                              pref->accept(path, currentParent, *this);
+                        }
+                        else
+                              currentParent->addChild(new QTreeWidgetItem(currentParent, QStringList() << currentDir));
+
+                        currentParent = currentParent->child(currentParent->childCount() - 1);
+                  }
+                  else
+                        currentParent = child;
+            }
+            // once the preference is put, get back to the root item
+            // to put the next preference.
+            currentParent = parent;
+      }
+
+      //parent->child(0)->setHidden(true);
+      //parent->child(0)->child(0)->setHidden(false);
+      }
       for (QString key : preferences.allPreferences().keys()) {
             Preference* pref = preferences.allPreferences().value(key);
 
@@ -57,38 +105,42 @@ void PreferencesListWidget::updatePreferences()
 
 void PreferencesListWidget::addPreference(PreferenceItem* item)
       {
-      addTopLevelItem(item);
       setItemWidget(item, PREF_VALUE_COLUMN, item->editor());
       preferenceItems[item->name()] = item;
       }
 
-void PreferencesListWidget::visit(QString key, IntPreference*)
+void PreferencesListWidget::visit(QString key, QTreeWidgetItem* parent, IntPreference*)
       {
       IntPreferenceItem* item = new IntPreferenceItem(key);
+      parent.addChild(item);
       addPreference(item);
       }
 
-void PreferencesListWidget::visit(QString key, DoublePreference*)
+void PreferencesListWidget::visit(QString key, QTreeWidgetItem* parent, DoublePreference*)
       {
       DoublePreferenceItem* item = new DoublePreferenceItem(key);
+      parent.addChild(item);
       addPreference(item);
       }
 
-void PreferencesListWidget::visit(QString key, BoolPreference*)
+void PreferencesListWidget::visit(QString key, QTreeWidgetItem* parent, BoolPreference*)
       {
       BoolPreferenceItem* item = new BoolPreferenceItem(key);
+      parent.addChild(item);
       addPreference(item);
       }
 
-void PreferencesListWidget::visit(QString key, StringPreference*)
+void PreferencesListWidget::visit(QString key, QTreeWidgetItem* parent, StringPreference*)
       {
       StringPreferenceItem* item = new StringPreferenceItem(key);
+      parent.addChild(item);
       addPreference(item);
       }
 
-void PreferencesListWidget::visit(QString key, ColorPreference*)
+void PreferencesListWidget::visit(QString key, QTreeWidgetItem* parent, ColorPreference*)
       {
       ColorPreferenceItem* item = new ColorPreferenceItem(key);
+      parent.addChild(item);
       addPreference(item);
       }
 

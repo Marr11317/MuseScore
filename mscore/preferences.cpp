@@ -416,45 +416,45 @@ IntPreference::IntPreference(int defaultValue, bool showInAdvancedList)
       : Preference(defaultValue, QMetaType::Int, showInAdvancedList)
       {}
 
-void IntPreference::accept(QString key, PreferenceVisitor& v)
+void IntPreference::accept(QString key, QTreeWidgetItem* parent, PreferenceVisitor& v)
       {
-      v.visit(key, this);
+      v.visit(key, parent, this);
       }
 
 DoublePreference::DoublePreference(double defaultValue, bool showInAdvancedList)
       : Preference(defaultValue, QMetaType::Double, showInAdvancedList)
       {}
 
-void DoublePreference::accept(QString key, PreferenceVisitor& v)
+void DoublePreference::accept(QString key, QTreeWidgetItem* parent, PreferenceVisitor& v)
       {
-      v.visit(key, this);
+      v.visit(key, parent, this);
       }
 
 BoolPreference::BoolPreference(bool defaultValue, bool showInAdvancedList)
       : Preference(defaultValue, QMetaType::Bool, showInAdvancedList)
       {}
 
-void BoolPreference::accept(QString key, PreferenceVisitor& v)
+void BoolPreference::accept(QString key, QTreeWidgetItem* parent, PreferenceVisitor& v)
       {
-      v.visit(key, this);
+      v.visit(key, parent, this);
       }
 
 StringPreference::StringPreference(QString defaultValue, bool showInAdvancedList)
       : Preference(defaultValue, QMetaType::QString, showInAdvancedList)
       {}
 
-void StringPreference::accept(QString key, PreferenceVisitor& v)
+void StringPreference::accept(QString key, QTreeWidgetItem* parent, PreferenceVisitor& v)
       {
-      v.visit(key, this);
+      v.visit(key, parent, this);
       }
 
 ColorPreference::ColorPreference(QColor defaultValue, bool showInAdvancedList)
       : Preference(defaultValue, QMetaType::QColor, showInAdvancedList)
       {}
 
-void ColorPreference::accept(QString key, PreferenceVisitor& v)
+void ColorPreference::accept(QString key, QTreeWidgetItem* parent, PreferenceVisitor& v)
       {
-      v.visit(key, this);
+      v.visit(key, parent, this);
       }
 
 EnumPreference::EnumPreference(QVariant defaultValue, bool showInAdvancedList)

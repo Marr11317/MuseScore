@@ -149,6 +149,7 @@ class PreferencesListWidget : public QTreeWidget, public PreferenceVisitor {
       QHash<QString, PreferenceItem*> preferenceItems;
 
       void addPreference(PreferenceItem* item);
+      QTreeWidgetItem* findChildByName(QTreeWidgetItem* parent, QString name, int column);
 
    public:
       explicit PreferencesListWidget(QWidget* parent = 0);
@@ -157,11 +158,11 @@ class PreferencesListWidget : public QTreeWidget, public PreferenceVisitor {
 
       std::vector<QString> save();
 
-      void visit(QString key, IntPreference*);
-      void visit(QString key, DoublePreference*);
-      void visit(QString key, BoolPreference*);
-      void visit(QString key, StringPreference*);
-      void visit(QString key, ColorPreference*);
+      void visit(QString key, QTreeWidgetItem* parent, IntPreference*);
+      void visit(QString key, QTreeWidgetItem* parent, DoublePreference*);
+      void visit(QString key, QTreeWidgetItem* parent, BoolPreference*);
+      void visit(QString key, QTreeWidgetItem* parent, StringPreference*);
+      void visit(QString key, QTreeWidgetItem* parent, ColorPreference*);
 
 };
 

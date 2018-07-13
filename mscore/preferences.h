@@ -204,44 +204,44 @@ class Preference {
       QVariant defaultValue() const {return _defaultValue;}
       bool showInAdvancedList() const {return _showInAdvancedList;}
       QMetaType::Type type() {return _type;}
-      virtual void accept(QString key, PreferenceVisitor&) = 0;
+      virtual void accept(QString, QTreeWidgetItem*, PreferenceVisitor&) = 0;
       };
 
 class IntPreference : public Preference {
    public:
       IntPreference(int defaultValue, bool showInAdvancedList = true);
-      virtual void accept(QString key, PreferenceVisitor&);
+      virtual void accept(QString, QTreeWidgetItem*, PreferenceVisitor&);
       };
 
 class DoublePreference : public Preference {
    public:
       DoublePreference(double defaultValue, bool showInAdvancedList = true);
-      virtual void accept(QString key, PreferenceVisitor&);
+      virtual void accept(QString, QTreeWidgetItem*, PreferenceVisitor&);
       };
 
 class BoolPreference : public Preference {
    public:
       BoolPreference(bool defaultValue, bool showInAdvancedList = true);
-      virtual void accept(QString key, PreferenceVisitor&);
+      virtual void accept(QString, QTreeWidgetItem*, PreferenceVisitor&);
       };
 
 class StringPreference: public Preference {
    public:
       StringPreference(QString defaultValue, bool showInAdvancedList = true);
-      virtual void accept(QString key, PreferenceVisitor&);
+      virtual void accept(QString, QTreeWidgetItem*, PreferenceVisitor&);
       };
 
 class ColorPreference: public Preference {
    public:
       ColorPreference(QColor defaultValue, bool showInAdvancedList = true);
-      virtual void accept(QString key, PreferenceVisitor&);
+      virtual void accept(QString, QTreeWidgetItem*, PreferenceVisitor&);
       };
 
 // Support for EnumPreference is currently not fully implemented
 class EnumPreference: public Preference {
    public:
       EnumPreference(QVariant defaultValue, bool showInAdvancedList = true);
-      virtual void accept(QString, PreferenceVisitor&);
+      virtual void accept(QString, QTreeWidgetItem*, PreferenceVisitor&);
       };
 
 //---------------------------------------------------------
@@ -349,11 +349,11 @@ inline QDataStream &operator>>(QDataStream &in, T &val)
 
 class PreferenceVisitor {
    public:
-      virtual void visit(QString key, IntPreference*) = 0;
-      virtual void visit(QString key, DoublePreference*) = 0;
-      virtual void visit(QString key, BoolPreference*) = 0;
-      virtual void visit(QString key, StringPreference*) = 0;
-      virtual void visit(QString key, ColorPreference*) = 0;
+      virtual void visit(QString key, QTreeWidgetItem*, IntPreference*) = 0;
+      virtual void visit(QString key, QTreeWidgetItem*, DoublePreference*) = 0;
+      virtual void visit(QString key, QTreeWidgetItem*, BoolPreference*) = 0;
+      virtual void visit(QString key, QTreeWidgetItem*, StringPreference*) = 0;
+      virtual void visit(QString key, QTreeWidgetItem*, ColorPreference*) = 0;
       };
 
 

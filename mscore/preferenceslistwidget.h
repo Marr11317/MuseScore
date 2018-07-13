@@ -30,6 +30,13 @@ namespace Ms {
 //---------------------------------------------------------
 //   PreferenceItem
 //---------------------------------------------------------
+
+// TODO: Add a FilePreferenceItem class.
+
+// TODO: Add a Use'type'Preference class (ex: UseStringPreferenceItem),
+// which is basically a string that can be enabled or not.
+// PREF_UI_CANVAS_BG_USECOLOR and PREF_UI_CANVAS_BG_COLOR would be merged into
+// a UseColorPreferenceItem instead of 2 distinct items.
 class PreferenceItem : public QTreeWidgetItem, public QObject {
 
       QString _name;

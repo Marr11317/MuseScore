@@ -210,38 +210,38 @@ class Preference {
 class IntPreference : public Preference {
    public:
       IntPreference(int defaultValue, bool showInAdvancedList = true);
-      virtual void accept(QString, QTreeWidgetItem*, PreferenceVisitor&);
+      virtual void accept(QString, QTreeWidgetItem*, PreferenceVisitor&) override;
       };
 
 class DoublePreference : public Preference {
    public:
       DoublePreference(double defaultValue, bool showInAdvancedList = true);
-      virtual void accept(QString, QTreeWidgetItem*, PreferenceVisitor&);
+      virtual void accept(QString, QTreeWidgetItem*, PreferenceVisitor&) override;
       };
 
 class BoolPreference : public Preference {
    public:
       BoolPreference(bool defaultValue, bool showInAdvancedList = true);
-      virtual void accept(QString, QTreeWidgetItem*, PreferenceVisitor&);
+      virtual void accept(QString, QTreeWidgetItem*, PreferenceVisitor&) override;
       };
 
 class StringPreference: public Preference {
    public:
       StringPreference(QString defaultValue, bool showInAdvancedList = true);
-      virtual void accept(QString, QTreeWidgetItem*, PreferenceVisitor&);
+      virtual void accept(QString, QTreeWidgetItem*, PreferenceVisitor&) override;
       };
 
 class ColorPreference: public Preference {
    public:
       ColorPreference(QColor defaultValue, bool showInAdvancedList = true);
-      virtual void accept(QString, QTreeWidgetItem*, PreferenceVisitor&);
+      virtual void accept(QString, QTreeWidgetItem*, PreferenceVisitor&) override;
       };
 
 // Support for EnumPreference is currently not fully implemented
 class EnumPreference: public Preference {
    public:
       EnumPreference(QVariant defaultValue, bool showInAdvancedList = true);
-      virtual void accept(QString, QTreeWidgetItem*, PreferenceVisitor&);
+      virtual void accept(QString, QTreeWidgetItem*, PreferenceVisitor&) override;
       };
 
 //---------------------------------------------------------

@@ -461,7 +461,7 @@ EnumPreference::EnumPreference(QVariant defaultValue, bool showInAdvancedList)
       : Preference(defaultValue, QMetaType::User, showInAdvancedList)
       {}
 
-void EnumPreference::accept(QString, PreferenceVisitor&)
+void EnumPreference::accept(QString, QTreeWidgetItem*, PreferenceVisitor&)
       {
       }
 

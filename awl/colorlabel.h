@@ -29,12 +29,12 @@ namespace Awl {
 
 class ColorLabel : public QFrame {
       Q_OBJECT
-      Q_PROPERTY(QColor color READ color WRITE setColor)
+      Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
 
       QColor _color;
       QPixmap* _pixmap;
 
-      virtual void paintEvent(QPaintEvent*);
+      virtual void paintEvent(QPaintEvent*) override;
       virtual void mousePressEvent(QMouseEvent*);
 
    signals:

@@ -49,6 +49,7 @@ QT5_WRAP_UI (ui_headers
       startcenter.ui scorePreview.ui scoreBrowser.ui
       logindialog.ui uploadscoredialog.ui breaksdialog.ui
       toolbarEditor.ui
+      advancedpreferenceswidget.ui
 
       importmidi/importmidi_panel.ui
 
@@ -352,7 +353,7 @@ add_executable ( ${ExecutableName}
       toolbarEditor.cpp toolbarEditor.h
       abstractdialog.cpp abstractdialog.h
       toolbuttonmenu.cpp
-      preferenceslistwidget.cpp preferenceslistwidget.h
+      preferenceslistwidget.cpp advancedpreferenceswidget.cpp
       extension.cpp extension.h
 
       ${COCOABRIDGE}

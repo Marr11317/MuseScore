@@ -23,6 +23,8 @@
 #include "awl/colorlabel.h"
 #include "preferences.h"
 
+#include <QtWidgets>
+
 #define PREF_VALUE_COLUMN 1
 
 namespace Ms {
@@ -39,6 +41,7 @@ namespace Ms {
 // a UseColorPreferenceItem instead of 2 distinct items.
 class PreferenceItem : public QTreeWidgetItem, public QObject {
 
+      // the name is actually the Url (or #define value) of the preference
       QString _name;
 
     protected:
@@ -54,7 +57,9 @@ class PreferenceItem : public QTreeWidgetItem, public QObject {
       virtual QWidget* editor() const = 0;
       virtual bool isModified() const = 0;
 
-      QString name() const {return _name;}
+      void setVisible(bool visible);
+
+      QString name() const { return _name; }
 
       };
 
@@ -159,7 +164,7 @@ class PreferencesListWidget : public QTreeWidget, public PreferenceVisitor {
       QTreeWidgetItem* findChildByName(QTreeWidgetItem* parent, QString name, int column);
 
    public:
-      explicit PreferencesListWidget(QWidget* parent = 0);
+      explicit PreferencesListWidget(QWidget* parent = nullptr);
       void loadPreferences();
       void updatePreferences();
 
@@ -171,6 +176,9 @@ class PreferencesListWidget : public QTreeWidget, public PreferenceVisitor {
       void visit(QString key, QTreeWidgetItem* parent, StringPreference*);
       void visit(QString key, QTreeWidgetItem* parent, ColorPreference*);
 
+   public slots:
+      void filter(const QString& query);
+      void resetAdvancedPreferenceToDefault();
 };
 
 } // namespace Ms

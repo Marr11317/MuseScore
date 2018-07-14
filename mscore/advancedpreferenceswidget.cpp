@@ -26,27 +26,26 @@ AdvancedPreferencesWidget::AdvancedPreferencesWidget(QWidget* parent) :
       ui(new Ui::AdvancedPreferencesWidget)
       {
       ui->setupUi(this);
-      setupFilter();
-      }
-
-// setup the search filter
-void AdvancedPreferencesWidget::setupFilter()
-      {
-      QAbstractItemModel* model = ui->treePreferencesWidget->model();
-      QSortFilterProxyModel* filter = new QSortFilterProxyModel(ui->treePreferencesWidget);
-      filter->setFilterCaseSensitivity(Qt::CaseInsensitive);
-      filter->setRecursiveFilteringEnabled(true);
-      // enable filtering for all columns
-      filter->setFilterKeyColumn(-1);
-
-      filter->setSourceModel(model);
-      ui->treePreferencesWidget->QTreeView::setModel(filter);
-      connect(ui->searchLineEdit, &QLineEdit::textChanged, filter, &QSortFilterProxyModel::setFilterFixedString);
+      connect(ui->searchLineEdit, &QLineEdit::textChanged, ui->treePreferencesWidget, &PreferencesListWidget::filter);
+      connect(ui->resetToDefaultButton, &QPushButton::clicked, ui->treePreferencesWidget, &PreferencesListWidget::resetAdvancedPreferenceToDefault);
+      connect(ui->treePreferencesWidget, &QTreeWidget::itemSelectionChanged, this, &AdvancedPreferencesWidget::enableResetPreferenceToDefault);
       }
 
 AdvancedPreferencesWidget::~AdvancedPreferencesWidget()
       {
       delete ui;
+      }
+
+void AdvancedPreferencesWidget::enableResetPreferenceToDefault()
+      {
+      for (QTreeWidgetItem* item: ui->treePreferencesWidget->selectedItems()) {
+            if (item->childCount()) { // the item has children and so can't be a PreferenceItem.
+                  ui->resetToDefaultButton->setEnabled(false);
+                  return;
+                  }
+            }
+      // if all selected items are PreferenceItems, then enable resetToDefaultButton.
+      ui->resetToDefaultButton->setEnabled(ui->treePreferencesWidget->selectedItems().count());
       }
 
 } // Ms

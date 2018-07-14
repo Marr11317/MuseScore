@@ -32,10 +32,15 @@ class AdvancedPreferencesWidget : public QWidget
       explicit AdvancedPreferencesWidget(QWidget* parent = nullptr);
       ~AdvancedPreferencesWidget();
 
+      inline void updatePreferences() { ui->treePreferencesWidget->updatePreferences(); }
+      inline void save() { ui->treePreferencesWidget->save(); }
+
    private:
       Ui::AdvancedPreferencesWidget* ui;
 
-      void setupFilter();
+   private slots:
+      void enableResetPreferenceToDefault();
+
 };
 
 } // Ms

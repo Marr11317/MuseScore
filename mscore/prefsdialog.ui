@@ -96,7 +96,7 @@
       <string>Preferences Tab Manager</string>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>9</number>
      </property>
      <widget class="QWidget" name="tabGeneral">
       <property name="accessibleName">
@@ -4213,53 +4213,7 @@ Adjusting latency can help synchronize your MIDI hardware with MuseScore's inter
        <item>
         <layout class="QVBoxLayout" name="advancedTabLayout">
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_6">
-           <item>
-            <widget class="QPushButton" name="resetPreference">
-             <property name="toolTip">
-              <string>Select a preference to reset to default value</string>
-             </property>
-             <property name="accessibleName">
-              <string>Reset to default</string>
-             </property>
-             <property name="accessibleDescription">
-              <string>Select a preference to reset to default value</string>
-             </property>
-             <property name="text">
-              <string>Reset to default</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="advancedSearch">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="placeholderText">
-              <string>Search</string>
-             </property>
-             <property name="clearButtonEnabled">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <spacer name="horizontalSpacer">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-          </layout>
+          <widget class="Ms::AdvancedPreferencesWidget" name="advancedWidget" native="true"/>
          </item>
         </layout>
        </item>
@@ -4286,6 +4240,12 @@ Adjusting latency can help synchronize your MIDI hardware with MuseScore's inter
    <class>Ms::RecordButton</class>
    <extends>QToolButton</extends>
    <header>recordbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>Ms::AdvancedPreferencesWidget</class>
+   <extends>QWidget</extends>
+   <header>advancedpreferenceswidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>

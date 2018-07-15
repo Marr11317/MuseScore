@@ -18,6 +18,7 @@
 //=============================================================================
 
 #include "preferenceslistwidget.h"
+#include "preferencestreewidget_delegate.h"
 
 namespace Ms {
 
@@ -25,20 +26,69 @@ PreferencesListWidget::PreferencesListWidget(QWidget* parent)
       : QTreeWidget(parent)
       {
       header()->setSectionResizeMode(0, QHeaderView::Interactive);
-      header()->resizeSections(QHeaderView::ResizeToContents);
       sortByColumn(0, Qt::AscendingOrder);
       loadPreferences();
-      resizeColumnToContents(1);
+
+      setItemDelegate(new Ms::PreferencesTreeWidget_Delegate);
+      resizeColumnToContents(0);
+      expandAll();
+
+      connect(this, &QTreeWidget::itemExpanded, this, [&]() { resizeColumnToContents(0); });
       }
 
-QTreeWidgetItem* PreferencesListWidget::findChildByName(QTreeWidgetItem* parent, QString name, int column)
+// Find the first child of parent with text name
+QTreeWidgetItem* PreferencesListWidget::findChildByName(const QTreeWidgetItem* parent, const QString& text, const int column) const
       {
       for (int childNum = 0; childNum < parent->childCount(); ++childNum) {
             QTreeWidgetItem* child = parent->child(childNum);
-            if (child->text(column) == name)
+            if (child->text(column) == text)
                   return child;
             }
       return nullptr;
+      }
+
+// Gets the list af all items in that have parent as a parent, direct or not.
+void PreferencesListWidget::recursiveChildList(QList<QTreeWidgetItem*>& list, QTreeWidgetItem* parent) const
+      {
+      list << parent;
+      for(int i = 0; i < parent->childCount(); ++i)
+            recursiveChildList(list, parent->child(i));
+      }
+
+// Gets the list af all items in that have parent as a parent, direct or not.
+// This is an overloded function.
+QList<QTreeWidgetItem*> PreferencesListWidget::recursiveChildList(QTreeWidgetItem* parent) const
+      {
+      QList<QTreeWidgetItem*> list;
+
+      // if there's no parent, return an emty list.
+      if (!parent) {
+            qDebug() << "QList<PreferenceItem*> PreferencesListWidget::recursivePreferenceList(QTreeWidgetItem* parent)"
+                        " : invalid parent. Returning an empty list";
+            return list;
+            }
+
+      recursiveChildList(list, parent);
+
+      return list;
+      }
+
+QList<PreferenceItem*> PreferencesListWidget::recursivePreferenceItemList(QTreeWidgetItem* parent) const
+      {
+      QList<PreferenceItem*> preferenceList;
+      // return an empty list if parent doesn't exist.
+      if (!parent) {
+            qDebug() << "QList<PreferenceItem*> PreferencesListWidget::recursivePreferenceList(QTreeWidgetItem* parent)"
+                        " : invalid parent. Returning an empty list";
+            return preferenceList;
+            }
+
+      for (QTreeWidgetItem* child : recursiveChildList(parent)) {
+            if (!child->childCount())
+                  preferenceList << static_cast<PreferenceItem*> (child);
+            }
+
+      return preferenceList;
       }
 
 void PreferencesListWidget::loadPreferences()
@@ -58,9 +108,9 @@ void PreferencesListWidget::loadPreferences()
                   QTreeWidgetItem* child = findChildByName(currentParent, currentDir, 0);
                   // if doesn't exist, appendChild. if exist, current parent becomes child.
                   if (!child) {
-                        // if it's not a "directory" but it's a file, then just change it to the corresponding preferenceItem.
+                        // if it's not a "directory" but it's a "file", then just change it to the corresponding preferenceItem.
                         if (dirNumber == dirs.count() - 1)
-                              pref->accept(path, currentParent, *this);
+                              pref->accept(path, currentParent, *this); // send the path, so the preference keeps its name.
                         else
                               currentParent->addChild(new QTreeWidgetItem(currentParent, QStringList() << currentDir));
                         currentParent = currentParent->child(currentParent->childCount() - 1);
@@ -125,9 +175,8 @@ void PreferencesListWidget::filter(const QString& query)
       {
       QString s = query.toLower();
       for (PreferenceItem* item : preferenceItems.values())
-            item->setHidden(!item->name().toLower().contains(s));
-
-
+            item->setVisible(item->name().toLower().contains(s));
+      hideEmptyItems();
       }
 
 void PreferencesListWidget::resetAdvancedPreferenceToDefault()
@@ -142,20 +191,25 @@ void PreferencesListWidget::resetAdvancedPreferenceToDefault()
       preferences.setReturnDefaultValues(false);
       }
 
-void PreferenceItem::setVisible(bool visible)
+// Hide the QTreeWidgetItems which are not parent of any VISIBLE PreferenceItem.
+void PreferencesListWidget::hideEmptyItems()
       {
-      if (!visible == isHidden())
-            return;
+      // iterate over all items.
+      for(QTreeWidgetItem* parent : recursiveChildList(invisibleRootItem())) {
+            // if the item is already hidden, nothing to do.
+            if (parent->isHidden())
+                  continue;
 
-      if (visible) {
-            QTreeWidgetItem* par = QTreeWidgetItem::parent();
-            while(par) {
-                  par->setHidden(false);
-                  par = par->parent();
+            // Else, hide the parent if it doesn't contain PreferenceItems
+            // which aren't hidden.
+            bool toHide = true;
+            for(PreferenceItem* pref : recursivePreferenceItemList(parent)) {
+                  if (!pref->isHidden()) {
+                        toHide = false;
+                        break;
+                        }
                   }
-            }
-      else {
-
+            parent->setHidden(toHide);
             }
       }
 
@@ -185,12 +239,31 @@ PreferenceItem::PreferenceItem(QString name)
       : _name(name)
       {
       setText(0, name.split("/").last());
-      setSizeHint(1, QSize(100, 40));
+      setSizeHint(0, QSize(100, 50));
+      setSizeHint(1, QSize(100, 50));
       }
 
 void PreferenceItem::save(QVariant value)
       {
       preferences.setPreference(name(), value);
+      }
+
+void PreferenceItem::setVisible(bool visible)
+      {
+      if (!visible == isHidden())
+            return;
+
+      if (visible) {
+            // show the item's parents (and itself)
+            QTreeWidgetItem* item = this;
+            while(item) {
+                  item->setExpanded(true);
+                  item->setHidden(false);
+                  item = item->parent();
+                  }
+            }
+      else
+            setHidden(true);
       }
 
 //---------------------------------------------------------
@@ -203,8 +276,19 @@ ColorPreferenceItem::ColorPreferenceItem(QString name)
         _editor(new Awl::ColorLabel)
       {
       _editor->setColor(_initialValue);
+      _editor->setText(tr("Click to modify"));
       _editor->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
-      _editor->setToolTip(tr("Click to modify the color"));
+
+      auto setToolTip = [&](QColor& c)
+            {
+            _editor->setToolTip(tr("RGB: %1, %2, %3")
+                                .arg(c.red())
+                                .arg(c.green())
+                                .arg(c.blue()));
+            };
+      setToolTip(_initialValue);
+
+      connect(_editor, &Awl::ColorLabel::colorChanged, this, setToolTip);
       }
 
 void ColorPreferenceItem::save()
@@ -227,7 +311,7 @@ void ColorPreferenceItem::setDefaultValue()
 
 bool ColorPreferenceItem::isModified() const
       {
-      return _initialValue != _editor->color();
+      return (_initialValue != _editor->color());
       }
 
 
@@ -237,9 +321,9 @@ bool ColorPreferenceItem::isModified() const
 
 IntPreferenceItem::IntPreferenceItem(QString name)
       : PreferenceItem(name),
-        _initialValue(preferences.getInt(name))
+        _initialValue(preferences.getInt(name)),
+        _editor(new QSpinBox)
 {
-      _editor = new QSpinBox;
       _editor->setMaximum(INT_MAX);
       _editor->setMinimum(INT_MIN);
       _editor->setValue(_initialValue);
@@ -266,7 +350,7 @@ void IntPreferenceItem::setDefaultValue()
 
 bool IntPreferenceItem::isModified() const
       {
-      return _initialValue != _editor->value();
+      return (_initialValue != _editor->value());
       }
 
 //---------------------------------------------------------
@@ -303,7 +387,7 @@ void DoublePreferenceItem::setDefaultValue()
 
 bool DoublePreferenceItem::isModified() const
       {
-      return _initialValue != _editor->value();
+      return (_initialValue != _editor->value());
       }
 
 
@@ -317,13 +401,13 @@ BoolPreferenceItem::BoolPreferenceItem(QString name)
         _editor(new QCheckBox)
       {
       _editor->setChecked(_initialValue);
-      auto setCheckboxTextAndToolTip = [&](bool checked)
-             {
-             _editor->setText(checked ? tr("true") : tr("false"));
-             _editor->setToolTip(checked ? tr("true") : tr("false"));
-             };
-      setCheckboxTextAndToolTip(_initialValue);
-      connect(_editor, &QCheckBox::toggled, this, setCheckboxTextAndToolTip);
+      auto setText = [&](bool checked)
+            {
+            _editor->setText(checked ? tr("true") : tr("false"));
+            _editor->setToolTip(checked ? tr("true") : tr("false"));
+            };
+      setText(_initialValue);
+      connect(_editor, &QCheckBox::toggled, this, setText);
       }
 
 void BoolPreferenceItem::save()
@@ -346,7 +430,7 @@ void BoolPreferenceItem::setDefaultValue()
 
 bool BoolPreferenceItem::isModified() const
       {
-      return _initialValue != _editor->isChecked();
+      return (_initialValue != _editor->isChecked());
       }
 
 //---------------------------------------------------------
@@ -381,7 +465,7 @@ void StringPreferenceItem::setDefaultValue()
 
 bool StringPreferenceItem::isModified() const
       {
-      return _initialValue != _editor->text();
+      return (_initialValue != _editor->text());
       }
 
 

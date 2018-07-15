@@ -30,25 +30,36 @@ namespace Awl {
 class ColorLabel : public QFrame {
       Q_OBJECT
       Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
+      Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged)
+      Q_PROPERTY(QPixmap* pixmap READ pixmap WRITE setPixmap NOTIFY pixmapChanged)
 
       QColor _color;
+      QString _text;
       QPixmap* _pixmap;
 
       virtual void paintEvent(QPaintEvent*) override;
-      virtual void mousePressEvent(QMouseEvent*);
+      virtual void mousePressEvent(QMouseEvent*) override;
 
    signals:
-      void colorChanged(QColor);
+      void colorChanged(QColor&);
+      void pixmapChanged(const QPixmap*);
+      void textChanged(const QString&);
 
    public:
       ColorLabel(QWidget* parent = 0);
       ~ColorLabel();
-      void setColor(const QColor& c);
-      virtual QSize sizeHint() const;
+
+      void setColor(const QColor&);
+      QColor color() const;
+
+      virtual QSize sizeHint() const override;
+
+      QPixmap* pixmap() const;
       void setPixmap(QPixmap*);
-      QColor color() const     { return _color; }
-      QPixmap* pixmap() const  { return _pixmap;  }
-      };
+
+      QString text() const;
+      void setText(const QString& text);
+};
 
 }  // namespace Awl
 #endif

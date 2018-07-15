@@ -20,6 +20,8 @@
 
 #include "colorlabel.h"
 
+#include <QPainter>
+
 namespace Awl {
 
 //---------------------------------------------------------
@@ -31,6 +33,8 @@ ColorLabel::ColorLabel(QWidget* parent)
       {
       _color  = Qt::blue;
       _pixmap = 0;
+      _text = "";
+      setCursor(Qt::PointingHandCursor);
       }
 
 ColorLabel::~ColorLabel()
@@ -45,7 +49,17 @@ ColorLabel::~ColorLabel()
 void ColorLabel::setColor(const QColor& c)
       {
       _color = c;
+      emit colorChanged(_color);
       update();
+      }
+
+//---------------------------------------------------------
+//   color
+//---------------------------------------------------------
+
+QColor ColorLabel::color() const
+      {
+      return _color;
       }
 
 //---------------------------------------------------------
@@ -56,6 +70,7 @@ void ColorLabel::setPixmap(QPixmap* pm)
       {
       delete _pixmap;
       _pixmap = pm;
+      emit pixmapChanged(_pixmap);
       update();
       }
 
@@ -69,6 +84,35 @@ QSize ColorLabel::sizeHint() const
       }
 
 //---------------------------------------------------------
+//   pixmap
+//---------------------------------------------------------
+
+QPixmap* ColorLabel::pixmap() const
+      {
+      return _pixmap;
+      }
+
+//---------------------------------------------------------
+//   text
+//---------------------------------------------------------
+
+QString ColorLabel::text() const
+      {
+      return _text;
+      }
+
+//---------------------------------------------------------
+//   setText
+//---------------------------------------------------------
+
+void ColorLabel::setText(const QString& text)
+      {
+      _text = text;
+      emit textChanged(text);
+      update();
+      }
+
+//---------------------------------------------------------
 //   paintEvent
 //---------------------------------------------------------
 
@@ -77,11 +121,23 @@ void ColorLabel::paintEvent(QPaintEvent* ev)
       {
       QPainter p(this);
       int fw = frameWidth();
-      QRect r(frameRect().adjusted(fw, fw, -2*fw, -2*fw));
+      QRect r(frameRect().adjusted(fw, fw, -2 * fw, -2 * fw));
       if (_pixmap)
             p.drawTiledPixmap(r, *_pixmap);
-      else
+      else {
             p.fillRect(r, _color);
+            if (!_text.isEmpty()) {
+                  // Get a visible text: some gray that is the opposite of the pixel's lightness.
+                  // 1: Get the average value of R, G and B.
+                  // 2: Then add it 128 (approximately 255 / 2), to get the opposite darkness.
+                  // 3: % 255, so that it's not greater then 255, which would cause unexpected behaviour.
+                  //  This gives a gray that is lighter if the original color is dark,
+                  //  and darker if the original color is light.
+                  int grayLevel = ((((_color.red() + _color.green() + _color.blue()) / 3) + 128) % 255);
+                  p.setPen(QColor(grayLevel, grayLevel, grayLevel));
+                  p.drawText(r, _text, QTextOption(Qt::AlignCenter));
+                  }
+            }
       }
       QFrame::paintEvent(ev);
       }

@@ -51,10 +51,10 @@ class PreferenceItem : public QTreeWidgetItem, public QObject {
       PreferenceItem();
       PreferenceItem(QString name);
 
+      virtual QWidget* editor() const = 0;
       virtual void save() = 0;
       virtual void update() = 0;
       virtual void setDefaultValue() = 0;
-      virtual QWidget* editor() const = 0;
       virtual bool isModified() const = 0;
 
       void setVisible(bool visible);
@@ -74,11 +74,11 @@ class BoolPreferenceItem : public PreferenceItem {
    public:
       BoolPreferenceItem(QString name);
 
-      void save();
-      void update();
-      void setDefaultValue();
       QWidget* editor() const {return _editor;}
-      bool isModified() const;
+      inline void save();
+      inline void update();
+      inline void setDefaultValue();
+      inline bool isModified() const;
 
       };
 
@@ -93,11 +93,11 @@ class IntPreferenceItem : public PreferenceItem {
    public:
       IntPreferenceItem(QString name);
 
-      void save();
-      void update();
-      void setDefaultValue();
       QWidget* editor() const {return _editor;}
-      bool isModified() const;
+      inline void save();
+      inline void update();
+      inline void setDefaultValue();
+      inline bool isModified() const;
       };
 
 //---------------------------------------------------------
@@ -110,11 +110,11 @@ class DoublePreferenceItem : public PreferenceItem {
    public:
       DoublePreferenceItem(QString name);
 
-      void save();
-      void update();
-      void setDefaultValue();
       QWidget* editor() const {return _editor;}
-      bool isModified() const;
+      inline void save();
+      inline void update();
+      inline void setDefaultValue();
+      inline bool isModified() const;
       };
 
 //---------------------------------------------------------
@@ -127,11 +127,11 @@ class StringPreferenceItem : public PreferenceItem {
    public:
       StringPreferenceItem(QString name);
 
-      void save();
-      void update();
-      void setDefaultValue();
       QWidget* editor() const {return _editor;}
-      bool isModified() const;
+      inline void save();
+      inline void update();
+      inline void setDefaultValue();
+      inline bool isModified() const;
       };
 
 //---------------------------------------------------------
@@ -144,11 +144,11 @@ class ColorPreferenceItem : public PreferenceItem {
    public:
       ColorPreferenceItem(QString name);
 
-      void save();
-      void update();
-      void setDefaultValue();
       QWidget* editor() const {return _editor;}
-      bool isModified() const;
+      inline void save();
+      inline void update();
+      inline void setDefaultValue();
+      inline bool isModified() const;
       };
 
 
@@ -161,7 +161,13 @@ class PreferencesListWidget : public QTreeWidget, public PreferenceVisitor {
       QHash<QString, PreferenceItem*> preferenceItems;
 
       void addPreference(PreferenceItem* item);
-      QTreeWidgetItem* findChildByName(QTreeWidgetItem* parent, QString name, int column);
+      QTreeWidgetItem* findChildByName(const QTreeWidgetItem* parent, const QString& text, const int column) const;
+      int findChildDepth(QTreeWidgetItem* parent) const;
+      void recursiveChildList(QList<QTreeWidgetItem*>& list, QTreeWidgetItem* item) const;
+      QList<QTreeWidgetItem*> recursiveChildList(QTreeWidgetItem* parent) const;
+      QList<PreferenceItem*> recursivePreferenceItemList(QTreeWidgetItem* parent) const;
+
+      void hideEmptyItems();
 
    public:
       explicit PreferencesListWidget(QWidget* parent = nullptr);

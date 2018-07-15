@@ -25,13 +25,14 @@ namespace Ms {
 PreferencesListWidget::PreferencesListWidget(QWidget* parent)
       : QTreeWidget(parent)
       {
+      setObjectName("PreferencesListWidget");
       header()->setSectionResizeMode(0, QHeaderView::Interactive);
       sortByColumn(0, Qt::AscendingOrder);
       loadPreferences();
 
       setItemDelegate(new Ms::PreferencesTreeWidget_Delegate);
-      resizeColumnToContents(0);
       expandAll();
+      resizeColumnToContents(0);
 
       connect(this, &QTreeWidget::itemExpanded, this, [&]() { resizeColumnToContents(0); });
       }
@@ -73,6 +74,15 @@ QList<QTreeWidgetItem*> PreferencesListWidget::recursiveChildList(QTreeWidgetIte
       return list;
       }
 
+void PreferencesListWidget::showAll(bool all)
+      {
+      for (PreferenceItem* item : preferenceItems.values()) {
+            if (!(preferences.allPreferences().value(item->name())->showInAdvancedList()))
+                  item->setHidden(!all);
+            }
+      hideEmptyItems();
+      }
+
 QList<PreferenceItem*> PreferencesListWidget::recursivePreferenceItemList(QTreeWidgetItem* parent) const
       {
       QList<PreferenceItem*> preferenceList;
@@ -97,8 +107,6 @@ void PreferencesListWidget::loadPreferences()
       // iterate over all the preferences.
       for (QString path : preferences.allPreferences().keys()) {
             Preference* pref = preferences.allPreferences().value(path);
-            if(!pref->showInAdvancedList())
-                  continue;
 
             // iterate over the directories of the preferences.
             QStringList dirs = path.split("/");

@@ -22,11 +22,13 @@
 namespace Ms {
 
 PreferencesTreeWidget_Delegate::PreferencesTreeWidget_Delegate()
-      {}
+      {
+      setObjectName("PreferencesTreeWidget_Delegate");
+      }
 
 QSize PreferencesTreeWidget_Delegate::sizeHint(const QStyleOptionViewItem&, const QModelIndex&) const
       {
-      return QSize(170,22);
+      return QSize(0, 20);
       }
 
 } // Ms

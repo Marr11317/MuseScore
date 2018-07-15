@@ -185,6 +185,7 @@ class PreferencesListWidget : public QTreeWidget, public PreferenceVisitor {
    public slots:
       void filter(const QString& query);
       void resetAdvancedPreferenceToDefault();
+      void showAll(bool all = true);
 };
 
 } // namespace Ms

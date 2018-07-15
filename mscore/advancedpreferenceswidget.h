@@ -38,6 +38,9 @@ class AdvancedPreferencesWidget : public QWidget
    private:
       Ui::AdvancedPreferencesWidget* ui;
 
+      void readSettings();
+      void writeSettings();
+
    private slots:
       void enableResetPreferenceToDefault();
 

@@ -127,17 +127,10 @@ void ColorLabel::paintEvent(QPaintEvent* ev)
             p.drawTiledPixmap(r, *_pixmap);
       else {
             p.fillRect(r, _color);
-            p.setPen(QColor(Qt::black));
-            p.drawRect(r);
             if (!_text.isEmpty()) {
-                  // Get a visible text: some gray that is the opposite of the pixel's lightness.
-                  // 1: Get the average value of R, G and B.
-                  // 2: Then add it 128 (approximately 255 / 2), to get the opposite darkness.
-                  // 3: % 255, so that it's not greater then 255, which would cause unexpected behaviour.
-                  //  This gives a gray that is lighter if the original color is dark,
-                  //  and darker if the original color is light.
-                  int grayLevel = ((((_color.red() + _color.green() + _color.blue()) / 3) + 128) % 255);
-                  p.setPen(QColor(grayLevel, grayLevel, grayLevel));
+                  // Get a visible text: white if the text is dark and black if it's light.
+                  // Get the average of R, G and B. If it's greater than or equal to 128, it means the text is light.
+                  p.setPen(QColor((((_color.red() + _color.green() + _color.blue()) / 3) >= 128) ? Qt::black : Qt::white));
                   p.drawText(frameRect(), _text, QTextOption(Qt::AlignCenter));
                   }
             }

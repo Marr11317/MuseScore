@@ -84,14 +84,14 @@ enum class MusicxmlExportBreaks : char {
 // file path of instrument templates
 #define PREF_APP_PATHS_INSTRUMENTLIST1                      "application/paths/instrument list 1"
 #define PREF_APP_PATHS_INSTRUMENTLIST2                      "application/paths/instrument list 2"
-#define PREF_APP_PATHS_MYIMAGES                             "application/paths/myImages"
-#define PREF_APP_PATHS_MYPLUGINS                            "application/paths/myPlugins"
-#define PREF_APP_PATHS_MYSCORES                             "application/paths/myScores"
-#define PREF_APP_PATHS_MYSHORTCUTS                          "application/paths/myShortcuts"
-#define PREF_APP_PATHS_MYSOUNDFONTS                         "application/paths/mySoundfonts"
-#define PREF_APP_PATHS_MYSTYLES                             "application/paths/myStyles"
-#define PREF_APP_PATHS_MYTEMPLATES                          "application/paths/myTemplates"
-#define PREF_APP_PATHS_MYEXTENSIONS                         "application/paths/myExtensions"
+#define PREF_APP_PATHS_MYIMAGES                             "application/paths/my images"
+#define PREF_APP_PATHS_MYPLUGINS                            "application/paths/my plugins"
+#define PREF_APP_PATHS_MYSCORES                             "application/paths/my scores"
+#define PREF_APP_PATHS_MYSHORTCUTS                          "application/paths/my shortcuts"
+#define PREF_APP_PATHS_MYSOUNDFONTS                         "application/paths/my soundfonts"
+#define PREF_APP_PATHS_MYSTYLES                             "application/paths/my styles"
+#define PREF_APP_PATHS_MYTEMPLATES                          "application/paths/my templates"
+#define PREF_APP_PATHS_MYEXTENSIONS                         "application/paths/my extensions"
 #define PREF_APP_PLAYBACK_FOLLOWSONG                        "application/playback/follow song"
 #define PREF_APP_PLAYBACK_PANPLAYBACK                       "application/playback/pan playback"
 #define PREF_APP_PLAYBACK_PLAYREPEATS                       "application/playback/play repeats"
@@ -180,7 +180,7 @@ enum class MusicxmlExportBreaks : char {
 #define PREF_UI_SCORE_VOICES_VOICE3COLOR                    "ui/score/voices/voice 3 color"
 #define PREF_UI_SCORE_VOICES_VOICE4COLOR                    "ui/score/voices/voice 4 color"
 #define PREF_UI_THEME_ICONHEIGHT                            "ui/theme/icon height"
-#define PREF_UI_THEME_ICONWIDTH                             "ui/theme/iconWidth"
+#define PREF_UI_THEME_ICONWIDTH                             "ui/theme/icon width"
 
 
 class PreferenceVisitor;
@@ -231,11 +231,20 @@ class StringPreference: public Preference {
       virtual void accept(QString, QTreeWidgetItem*, PreferenceVisitor&) override;
       };
 
-class FilePreference : public StringPreference {
+class FilePreference : public Preference {
+      QString _filter;
    public:
-      FilePreference(QString defaultValue, bool showInAdvancedList = true);
+      FilePreference(QString defaultValue, QString filter, bool showInAdvancedList = true);
       virtual void accept(QString, QTreeWidgetItem*, PreferenceVisitor&) override;
-      };
+
+      QString filter() const;
+};
+
+class DirPreference : public Preference {
+   public:
+      DirPreference(QString defaultValue, bool showInAdvancedList = true);
+      virtual void accept(QString, QTreeWidgetItem*, PreferenceVisitor&) override;
+};
 
 class ColorPreference: public Preference {
    public:
@@ -359,6 +368,8 @@ class PreferenceVisitor {
       virtual void visit(QString key, QTreeWidgetItem*, DoublePreference*) = 0;
       virtual void visit(QString key, QTreeWidgetItem*, BoolPreference*) = 0;
       virtual void visit(QString key, QTreeWidgetItem*, StringPreference*) = 0;
+      virtual void visit(QString key, QTreeWidgetItem*, FilePreference*) = 0;
+      virtual void visit(QString key, QTreeWidgetItem*, DirPreference*) = 0;
       virtual void visit(QString key, QTreeWidgetItem*, ColorPreference*) = 0;
       };
 

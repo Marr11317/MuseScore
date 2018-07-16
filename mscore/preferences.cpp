@@ -75,23 +75,23 @@ void Preferences::init(bool storeInMemoryOnly)
             {PREF_APP_AUTOSAVE_AUTOSAVETIME,                       new IntPreference(2 /* minutes */, false)},
             {PREF_APP_AUTOSAVE_USEAUTOSAVE,                        new BoolPreference(true, false)},
             {PREF_APP_KEYBOARDLAYOUT,                              new StringPreference("US - International")},
-            {PREF_APP_PATHS_INSTRUMENTLIST1,                       new StringPreference(":/data/instruments.xml", false)},
-            {PREF_APP_PATHS_INSTRUMENTLIST2,                       new StringPreference("", false)},
-            {PREF_APP_PATHS_MYIMAGES,                              new StringPreference(QFileInfo(QString("%1/%2").arg(wd).arg(QCoreApplication::translate("images_directory", "Images"))).absoluteFilePath(), false)},
-            {PREF_APP_PATHS_MYPLUGINS,                             new StringPreference(QFileInfo(QString("%1/%2").arg(wd).arg(QCoreApplication::translate("plugins_directory", "Plugins"))).absoluteFilePath(), false)},
-            {PREF_APP_PATHS_MYSCORES,                              new StringPreference(QFileInfo(QString("%1/%2").arg(wd).arg(QCoreApplication::translate("scores_directory", "Scores"))).absoluteFilePath(), false)},
-            {PREF_APP_PATHS_MYSOUNDFONTS,                          new StringPreference(QFileInfo(QString("%1/%2").arg(wd).arg(QCoreApplication::translate("soundfonts_directory", "SoundFonts"))).absoluteFilePath(), false)},
-            {PREF_APP_PATHS_MYSHORTCUTS,                           new StringPreference(QFileInfo(QString("%1/%2").arg(wd).arg(QCoreApplication::translate("shortcuts_directory", "Shortcuts"))).absoluteFilePath(), false)},
-            {PREF_APP_PATHS_MYSTYLES,                              new StringPreference(QFileInfo(QString("%1/%2").arg(wd).arg(QCoreApplication::translate("styles_directory", "Styles"))).absoluteFilePath(), false)},
-            {PREF_APP_PATHS_MYTEMPLATES,                           new StringPreference(QFileInfo(QString("%1/%2").arg(wd).arg(QCoreApplication::translate("templates_directory", "Templates"))).absoluteFilePath(), false)},
-            {PREF_APP_PATHS_MYEXTENSIONS,                           new StringPreference(QFileInfo(QString("%1/%2").arg(wd).arg(QCoreApplication::translate("extensions_directory", "Extensions"))).absoluteFilePath(), false)},
+            {PREF_APP_PATHS_INSTRUMENTLIST1,                       new FilePreference(":/data/instruments.xml", QCoreApplication::translate("instrument_list", "Instrument List") + " (*.xml)",, false)},
+            {PREF_APP_PATHS_INSTRUMENTLIST2,                       new FilePreference("", QCoreApplication::translate("instrument_list", "Instrument List") + " (*.xml)", false)},
+            {PREF_APP_PATHS_MYIMAGES,                              new DirPreference(QFileInfo(QString("%1/%2").arg(wd).arg(QCoreApplication::translate("images_directory", "Images"))).absoluteFilePath(), false)},
+            {PREF_APP_PATHS_MYPLUGINS,                             new DirPreference(QFileInfo(QString("%1/%2").arg(wd).arg(QCoreApplication::translate("plugins_directory", "Plugins"))).absoluteFilePath(), false)},
+            {PREF_APP_PATHS_MYSCORES,                              new DirPreference(QFileInfo(QString("%1/%2").arg(wd).arg(QCoreApplication::translate("scores_directory", "Scores"))).absoluteFilePath(), false)},
+            {PREF_APP_PATHS_MYSOUNDFONTS,                          new DirPreference(QFileInfo(QString("%1/%2").arg(wd).arg(QCoreApplication::translate("soundfonts_directory", "SoundFonts"))).absoluteFilePath(), false)},
+            {PREF_APP_PATHS_MYSHORTCUTS,                           new DirPreference(QFileInfo(QString("%1/%2").arg(wd).arg(QCoreApplication::translate("shortcuts_directory", "Shortcuts"))).absoluteFilePath(), false)},
+            {PREF_APP_PATHS_MYSTYLES,                              new DirPreference(QFileInfo(QString("%1/%2").arg(wd).arg(QCoreApplication::translate("styles_directory", "Styles"))).absoluteFilePath(), false)},
+            {PREF_APP_PATHS_MYTEMPLATES,                           new DirPreference(QFileInfo(QString("%1/%2").arg(wd).arg(QCoreApplication::translate("templates_directory", "Templates"))).absoluteFilePath(), false)},
+            {PREF_APP_PATHS_MYEXTENSIONS,                          new DirPreference(QFileInfo(QString("%1/%2").arg(wd).arg(QCoreApplication::translate("extensions_directory", "Extensions"))).absoluteFilePath(), false)},
             {PREF_APP_PLAYBACK_FOLLOWSONG,                         new BoolPreference(true)},
             {PREF_APP_PLAYBACK_PANPLAYBACK,                        new BoolPreference(true)},
             {PREF_APP_PLAYBACK_PLAYREPEATS,                        new BoolPreference(true)},
             {PREF_APP_USESINGLEPALETTE,                            new BoolPreference(false)},
             {PREF_APP_STARTUP_FIRSTSTART,                          new BoolPreference(true)},
             {PREF_APP_STARTUP_SESSIONSTART,                        new EnumPreference(QVariant::fromValue(SessionStart::SCORE), false)},
-            {PREF_APP_STARTUP_STARTSCORE,                          new StringPreference(":/data/My_First_Score.mscz", false)},
+            {PREF_APP_STARTUP_STARTSCORE,                          new FilePreference(":/data/My_First_Score.mscz", QCoreApplication::translate("MuseScore_files", "MuseScore Files") + " (*.mscz *.mscx);;" + QCoreApplication::translate("All") + " (*)", false)},
             {PREF_APP_WORKSPACE,                                   new StringPreference("Basic", false)},
             {PREF_EXPORT_AUDIO_SAMPLERATE,                         new IntPreference(44100, false)},
             {PREF_EXPORT_MP3_BITRATE,                              new IntPreference(128, false)},
@@ -104,7 +104,7 @@ void Preferences::init(bool storeInMemoryOnly)
             {PREF_IMPORT_MUSICXML_IMPORTBREAKS,                    new BoolPreference(true, false)},
             {PREF_IMPORT_MUSICXML_IMPORTLAYOUT,                    new BoolPreference(true, false)},
             {PREF_IMPORT_OVERTURE_CHARSET,                         new StringPreference("GBK", false)},
-            {PREF_IMPORT_STYLE_STYLEFILE,                          new StringPreference("", false)},
+            {PREF_IMPORT_STYLE_STYLEFILE,                          new FilePreference("", QCoreApplication::translate("MuseScore_styles", "MuseScore Styles") + " (*.mss)", false)},
             {PREF_IO_ALSA_DEVICE,                                  new StringPreference("default", false)},
             {PREF_IO_ALSA_FRAGMENTS,                               new IntPreference(3, false)},
             {PREF_IO_ALSA_PERIODSIZE,                              new IntPreference(1024, false)},
@@ -138,14 +138,14 @@ void Preferences::init(bool storeInMemoryOnly)
             {PREF_SCORE_NOTE_PLAYONCLICK,                          new BoolPreference(true, false)},
             {PREF_SCORE_NOTE_DEFAULTPLAYDURATION,                  new IntPreference(300 /* ms */, false)},
             {PREF_SCORE_NOTE_WARNPITCHRANGE,                       new BoolPreference(true, false)},
-            {PREF_SCORE_STYLE_DEFAULTSTYLEFILE,                    new StringPreference("", false)},
-            {PREF_SCORE_STYLE_PARTSTYLEFILE,                       new StringPreference("", false)},
+            {PREF_SCORE_STYLE_DEFAULTSTYLEFILE,                    new FilePreference("", QCoreApplication::translate("MuseScore_styles", "MuseScore Styles") + " (*.mss)", false)},
+            {PREF_SCORE_STYLE_PARTSTYLEFILE,                       new FilePreference("", QCoreApplication::translate("MuseScore_styles", "MuseScore Styles") + " (*.mss)", false)},
             {PREF_UI_CANVAS_BG_USECOLOR,                           new BoolPreference(true, false)},
             {PREF_UI_CANVAS_FG_USECOLOR,                           new BoolPreference(true, false)},
             {PREF_UI_CANVAS_BG_COLOR,                              new ColorPreference(QColor("#dddddd"), false)},
             {PREF_UI_CANVAS_FG_COLOR,                              new ColorPreference(QColor("#f9f9f9"), false)},
-            {PREF_UI_CANVAS_BG_WALLPAPER,                          new StringPreference(QFileInfo(QString("%1%2").arg(mscoreGlobalShare).arg("wallpaper/background1.png")).absoluteFilePath(), false)},
-            {PREF_UI_CANVAS_FG_WALLPAPER,                          new StringPreference(QFileInfo(QString("%1%2").arg(mscoreGlobalShare).arg("wallpaper/paper5.png")).absoluteFilePath(), false)},
+            {PREF_UI_CANVAS_BG_WALLPAPER,                          new FilePreference(QFileInfo(QString("%1%2").arg(mscoreGlobalShare).arg("wallpaper/background1.png")).absoluteFilePath(), QCoreApplication::translate("images_files", "Images") + " (*.jpg *.jpeg *.png);;" + QCoreApplication::translate("images_files", "All") + " (*)", false)},
+            {PREF_UI_CANVAS_FG_WALLPAPER,                          new FilePreference(QFileInfo(QString("%1%2").arg(mscoreGlobalShare).arg("wallpaper/paper5.png")).absoluteFilePath(), QCoreApplication::translate("images_files", "Images") + " (*.jpg *.jpeg *.png);;" + QCoreApplication::translate("images_files", "All") + " (*)", false)},
             {PREF_UI_CANVAS_MISC_ANTIALIASEDDRAWING,               new BoolPreference(true, false)},
             {PREF_UI_CANVAS_MISC_SELECTIONPROXIMITY,               new IntPreference(6, false)},
             {PREF_UI_CANVAS_SCROLL_LIMITSCROLLAREA,                new BoolPreference(false, false)},
@@ -448,11 +448,26 @@ void StringPreference::accept(QString key, QTreeWidgetItem* parent, PreferenceVi
       v.visit(key, parent, this);
       }
 
-FilePreference::FilePreference(QString defaultValue, bool showInAdvancedList)
-      : Ms::StringPreference(QFileInfo(defaultValue).absoluteFilePath(), showInAdvancedList)
+QString FilePreference::filter() const
+{
+      return _filter;
+}
+
+FilePreference::FilePreference(QString defaultValue, QString filter, bool showInAdvancedList)
+      : Preference(defaultValue, QMetaType::QFile, showInAdvancedList),
+        _filter(filter)
       {}
 
 void FilePreference::accept(QString key, QTreeWidgetItem* parent, PreferenceVisitor& v)
+      {
+      v.visit(key, parent, this);
+      }
+
+DirPreference::DirPreference(QString defaultValue, bool showInAdvancedList)
+      : Preference(defaultValue, QMetaType::QDir, showInAdvancedList)
+      {}
+
+void DirPreference::accept(QString key, QTreeWidgetItem* parent, PreferenceVisitor& v)
       {
       v.visit(key, parent, this);
       }

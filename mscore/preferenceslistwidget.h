@@ -22,8 +22,6 @@
 
 #include "awl/colorlabel.h"
 #include "preferences.h"
-#include "filepreference.h"
-#include "filepreferenceitem.h"
 
 #include <QtWidgets>
 
@@ -34,8 +32,6 @@ namespace Ms {
 //---------------------------------------------------------
 //   PreferenceItem
 //---------------------------------------------------------
-
-// TODO: Add a FilePreferenceItem class.
 
 // TODO: Add a Use'type'Preference class (ex: UseStringPreferenceItem),
 // which is basically a string that can be enabled or not.
@@ -122,7 +118,7 @@ class DoublePreferenceItem : public PreferenceItem {
 //---------------------------------------------------------
 class StringPreferenceItem : public PreferenceItem {
       QString _initialValue;
-      QWidget* _editor;
+      QLineEdit* _editor;
 
    public:
       StringPreferenceItem(QString name);
@@ -132,22 +128,46 @@ class StringPreferenceItem : public PreferenceItem {
       inline void update();
       inline void setDefaultValue();
       inline bool isModified() const;
-
-   protected:
-      void setEditor(QWidget* editor);
-      QString initialValue() const { return _initialValue; }
       };
 
 //---------------------------------------------------------
 //   FilePreferenceItem
 //---------------------------------------------------------
-class FilePreferenceItem : public StringPreferenceItem {
+class FilePreferenceItem : public PreferenceItem {
+      QString _initialValue;
+      QPushButton* _editor;
 
    public:
       FilePreferenceItem(QString name);
 
+      QWidget* editor() const { return _editor; }
+      inline void save();
+      inline void update();
+      inline void setDefaultValue();
+      inline bool isModified() const;
+
    private slots:
-      bool getFile() const;
+      void getFile() const;
+};
+
+//---------------------------------------------------------
+//   DirPreferenceItem
+//---------------------------------------------------------
+class DirPreferenceItem : public PreferenceItem {
+      QString _initialValue;
+      QPushButton* _editor;
+
+   public:
+      DirPreferenceItem(QString name);
+
+      QWidget* editor() const { return _editor; }
+      inline void save();
+      inline void update();
+      inline void setDefaultValue();
+      inline bool isModified() const;
+
+   private slots:
+      bool getDirectory() const;
 };
 
 //---------------------------------------------------------
@@ -197,6 +217,7 @@ class PreferencesListWidget : public QTreeWidget, public PreferenceVisitor {
       void visit(QString key, QTreeWidgetItem* parent, BoolPreference*);
       void visit(QString key, QTreeWidgetItem* parent, StringPreference*);
       void visit(QString key, QTreeWidgetItem* parent, FilePreference*);
+      void visit(QString key, QTreeWidgetItem* parent, DirPreference*);
       void visit(QString key, QTreeWidgetItem* parent, ColorPreference*);
 
    public slots:

@@ -23,6 +23,8 @@
 
 namespace Ms {
 
+extern QString mscoreGlobalShare;
+
 PreferencesListWidget::PreferencesListWidget(QWidget* parent)
       : QTreeWidget(parent)
       {
@@ -190,6 +192,13 @@ void PreferencesListWidget::visit(QString key, QTreeWidgetItem* parent, StringPr
 void PreferencesListWidget::visit(QString key, QTreeWidgetItem* parent, FilePreference*)
       {
       FilePreferenceItem* item = new FilePreferenceItem(key);
+      parent->addChild(item);
+      addPreference(item);
+      }
+
+void PreferencesListWidget::visit(QString key, QTreeWidgetItem* parent, DirPreference*)
+      {
+      DirPreferenceItem* item = new DirPreferenceItem(key);
       parent->addChild(item);
       addPreference(item);
       }
@@ -467,12 +476,12 @@ StringPreferenceItem::StringPreferenceItem(QString name)
         _initialValue(preferences.getString(name)),
         _editor(new QLineEdit)
       {
-      static_cast<QLineEdit*> (_editor)->setText(_initialValue);
+      _editor->setText(_initialValue);
       }
 
 void StringPreferenceItem::save()
       {
-      QString newValue = static_cast<QLineEdit*> (_editor)->text();
+      QString newValue = _editor->text();
       _initialValue = newValue;
       PreferenceItem::save(newValue);
       }
@@ -480,41 +489,121 @@ void StringPreferenceItem::save()
 void StringPreferenceItem::update()
       {
       QString newValue = preferences.getString(name());
-      static_cast<QLineEdit*> (_editor)->setText(newValue);
+      _editor->setText(newValue);
       }
 
 void StringPreferenceItem::setDefaultValue()
       {
-      static_cast<QLineEdit*> (_editor)->setText(preferences.defaultValue(name()).toString());
+      _editor->setText(preferences.defaultValue(name()).toString());
       }
 
 bool StringPreferenceItem::isModified() const
       {
-      return (_initialValue != static_cast<QLineEdit*> (_editor)->text());
+      return (_initialValue != _editor->text());
       }
 
-FilePreferenceItem::FilePreferenceItem(QString name)
-      : StringPreferenceItem(name)
+//---------------------------------------------------------
+//   FilePreferenceItem
+//---------------------------------------------------------
+
+FilePreferenceItem::FilePreferenceItem(QString name, Type type)
+      : PreferenceItem(name),
+        _initialValue(preferences.getString(name)),
+        _editor(new QPushButton)
       {
-      setEditor(new QPushButton(*icons[int (Icons::fileOpen_ICON)], initialValue()));
-      static_cast<QPushButton*> (editor())->setText(preferences.getString(name()));
-
-      connect(static_cast<QPushButton*> (editor()), &QPushButton::clicked, this, &FilePreferenceItem::getFile);
+      _editor->setText(_initialValue);
+      _editor->setToolTip(tr("Click to choose a new file..."));
+      connect(_editor, &QPushButton::clicked, this, &FilePreferenceItem::getFile);
       }
 
-bool FilePreferenceItem::getFile() const
+void FilePreferenceItem::save()
+      {
+      QString newValue = _editor->text();
+      _initialValue = newValue;
+      PreferenceItem::save(newValue);
+      }
+
+void FilePreferenceItem::update()
+      {
+      QString newValue = preferences.getString(name());
+      _editor->setText(newValue);
+      }
+
+void FilePreferenceItem::setDefaultValue()
+      {
+      _editor->setText(preferences.defaultValue(name()).toString());
+      }
+
+bool FilePreferenceItem::isModified() const
+      {
+      return (_initialValue != _editor->text());
+      }
+
+void FilePreferenceItem::getFile() const
       {
       QString fileName = QFileDialog::getOpenFileName(
+                               this,
+                               tr("Choose file"),
+                               QFile(_editor->text()).exists()
+                               ? QFileInfo(QFile(_editor->text())).dir().absolutePath() : mscoreGlobalShare,
+                               static_cast<FilePreference*> (preferences.allPreferences().value(name()))->filter(),
+                               nullptr,
+                               (preferences.getBool(PREF_UI_APP_USENATIVEDIALOGS)
+                                ? QFileDialog::Options() : QFileDialog::DontUseNativeDialog)
+                               );
+      if (!fileName.isNull())
+            _editor->setText(fileName);
+      }
+
+//---------------------------------------------------------
+//   DirPreferenceItem
+//---------------------------------------------------------
+
+DirPreferenceItem::DirPreferenceItem(QString name)
+      : PreferenceItem(name),
+        _initialValue(preferences.getString(name)),
+        _editor(new QPushButton)
+      {
+      _editor->setText(_initialValue);
+      _editor->setToolTip(tr("Click to choose a new directory..."));
+      connect(_editor, &QPushButton::clicked, this, &DirPreferenceItem::getDirectory);
+      }
+
+void DirPreferenceItem::save()
+      {
+      QString newValue = _editor->text();
+      _initialValue = newValue;
+      PreferenceItem::save(newValue);
+      }
+
+void DirPreferenceItem::update()
+      {
+      QString newValue = preferences.getString(name());
+      _editor->setText(newValue);
+      }
+
+void DirPreferenceItem::setDefaultValue()
+      {
+      _editor->setText(preferences.defaultValue(name()).toString());
+      }
+
+bool DirPreferenceItem::isModified() const
+      {
+      return (_initialValue != _editor->text());
+      }
+
+void DirPreferenceItem::getDirectory() const
+      {
+      QString dirName = QFileDialog::getExistingDirectory (
                        this,
-                       tr("Choose new file"),
-                       static_cast<QPushButton*> (editor())->text(),
+                       tr("Choose directory"),
+                       QDir(_editor->text()).exists()
+                       ? _editor->text() : mscoreGlobalShare,
                        (preferences.getBool(PREF_UI_APP_USENATIVEDIALOGS)
                         ? QFileDialog::Options() : QFileDialog::DontUseNativeDialog)
                        );
-      if (!fileName.isNull())
-            static_cast<QPushButton*> (editor())->setText(fileName);
+      if (!dirName.isNull())
+            _editor->setText(dirName);
       }
-
-
 
 } // namespace Ms

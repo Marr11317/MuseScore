@@ -78,8 +78,22 @@ void PreferencesListWidget::showAll(bool all)
       {
       for (PreferenceItem* item : preferenceItems.values()) {
             if (!(preferences.allPreferences().value(item->name())->showInAdvancedList()))
-                  item->setVisible(all);
+                  item->setHidden(!all);
             }
+      hideEmptyItems();
+      }
+
+// This function combines the search filter and the showAll checkBox.
+void PreferencesListWidget::filterVisiblePreferences(const QString& query, bool all)
+      {
+      QString queryLowered = query.toLower();
+      for (PreferenceItem* item : preferenceItems.values()) {
+            // If the URL of the item contains the query, and the item needs to be shown (because
+            // of paremeter "all" or because the preference is always in the advanced list).
+            item->setVisible(((item->name().toLower().contains(queryLowered))
+                              && (all || (preferences.allPreferences().value(item->name())->showInAdvancedList()))));
+            }
+
       hideEmptyItems();
       }
 
@@ -247,8 +261,6 @@ PreferenceItem::PreferenceItem(QString name)
       : _name(name)
       {
       setText(0, name.split("/").last());
-      setSizeHint(0, QSize(100, 50));
-      setSizeHint(1, QSize(100, 50));
       }
 
 void PreferenceItem::save(QVariant value)
@@ -258,11 +270,8 @@ void PreferenceItem::save(QVariant value)
 
 void PreferenceItem::setVisible(bool visible)
       {
-      if (!visible == isHidden())
-            return;
-
       if (visible) {
-            // show the item's parents (and itself)
+            // show the item and it's parents
             QTreeWidgetItem* item = this;
             while(item) {
                   item->setExpanded(true);

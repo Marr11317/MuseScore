@@ -34,10 +34,16 @@ AdvancedPreferencesWidget::AdvancedPreferencesWidget(QWidget* parent) :
       readSettings();
       ui->treePreferencesWidget->showAll(ui->showAllCheckBox->isChecked());
 
-      connect(ui->searchLineEdit, &QLineEdit::textChanged, ui->treePreferencesWidget, &PreferencesListWidget::filter);
+      auto filterWShowAll = [&]()
+            {
+            ui->treePreferencesWidget->filterVisiblePreferences(ui->searchLineEdit->text(), ui->showAllCheckBox->isChecked());
+            };
+
       connect(ui->resetToDefaultButton, &QPushButton::clicked, ui->treePreferencesWidget, &PreferencesListWidget::resetAdvancedPreferenceToDefault);
       connect(ui->treePreferencesWidget, &QTreeWidget::itemSelectionChanged, this, &AdvancedPreferencesWidget::enableResetPreferenceToDefault);
-      connect(ui->showAllCheckBox, &QCheckBox::toggled, ui->treePreferencesWidget, &PreferencesListWidget::showAll);
+      connect(ui->searchLineEdit,  &QLineEdit::textChanged, this, filterWShowAll);
+      connect(ui->showAllCheckBox, &QCheckBox::toggled,     this, filterWShowAll);
+
       }
 
 AdvancedPreferencesWidget::~AdvancedPreferencesWidget()

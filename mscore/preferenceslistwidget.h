@@ -186,6 +186,7 @@ class PreferencesListWidget : public QTreeWidget, public PreferenceVisitor {
       void filter(const QString& query);
       void resetAdvancedPreferenceToDefault();
       void showAll(bool all = true);
+      void filterVisiblePreferences(const QString& query, bool all);
 };
 
 } // namespace Ms

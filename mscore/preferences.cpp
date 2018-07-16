@@ -163,14 +163,14 @@ void Preferences::init(bool storeInMemoryOnly)
             {PREF_UI_APP_SHOWSTATUSBAR,                            new BoolPreference(true)},
             {PREF_UI_APP_USENATIVEDIALOGS,                         new BoolPreference(nativeDialogs)},
             {PREF_UI_PIANO_HIGHLIGHTCOLOR,                         new ColorPreference(QColor("#1259d0"))},
-            {PREF_UI_SCORE_NOTE_DROPCOLOR,                         new ColorPreference(QColor("#1778db"))},
+            {PREF_UI_SCORE_NOTEDROPCOLOR,                         new ColorPreference(QColor("#1778db"))},
             {PREF_UI_SCORE_DEFAULTCOLOR,                           new ColorPreference(QColor("#000000"))},
             {PREF_UI_SCORE_FRAMEMARGINCOLOR,                       new ColorPreference(QColor("#5999db"))},
             {PREF_UI_SCORE_LAYOUTBREAKCOLOR,                       new ColorPreference(QColor("#5999db"))},
             {PREF_UI_SCORE_VOICE1_COLOR,                           new ColorPreference(QColor("#1259d0"))},    // blue
             {PREF_UI_SCORE_VOICE2_COLOR,                           new ColorPreference(QColor("#009234"))},    // green
             {PREF_UI_SCORE_VOICE3_COLOR,                           new ColorPreference(QColor("#c04400"))},    // orange
-            {PREF_UI_SCORE_VOICE4_COLOR,                           new ColorPreference(QColor("#70167a"))},    // purple
+            {PREF_UI_SCORE_VOICES_VOICE4COLOR,                           new ColorPreference(QColor("#70167a"))},    // purple
             {PREF_UI_THEME_ICONWIDTH,                              new IntPreference(28, false)},
             {PREF_UI_THEME_ICONHEIGHT,                             new IntPreference(24, false)}
       });

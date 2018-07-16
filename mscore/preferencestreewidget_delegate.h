@@ -28,7 +28,7 @@ class PreferencesTreeWidget_Delegate : public QItemDelegate
    public:
       PreferencesTreeWidget_Delegate();
 
-      QSize sizeHint (const QStyleOptionViewItem &, const QModelIndex &) const;
+      QSize sizeHint(const QStyleOptionViewItem &, const QModelIndex &) const;
 }; // class PreferencesTreeWidget_Delegate
 
 } // Ms

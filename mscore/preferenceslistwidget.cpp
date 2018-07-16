@@ -78,7 +78,7 @@ void PreferencesListWidget::showAll(bool all)
       {
       for (PreferenceItem* item : preferenceItems.values()) {
             if (!(preferences.allPreferences().value(item->name())->showInAdvancedList()))
-                  item->setHidden(!all);
+                  item->setVisible(all);
             }
       hideEmptyItems();
       }

@@ -28,7 +28,7 @@ PreferencesTreeWidget_Delegate::PreferencesTreeWidget_Delegate()
 
 QSize PreferencesTreeWidget_Delegate::sizeHint(const QStyleOptionViewItem&, const QModelIndex&) const
       {
-      return QSize(0, 20);
+      return QSize(160, 22);
       }
 
 } // Ms

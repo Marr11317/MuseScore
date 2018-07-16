@@ -22,6 +22,8 @@
 
 #include "awl/colorlabel.h"
 #include "preferences.h"
+#include "filepreference.h"
+#include "filepreferenceitem.h"
 
 #include <QtWidgets>
 
@@ -60,7 +62,6 @@ class PreferenceItem : public QTreeWidgetItem, public QObject {
       void setVisible(bool visible);
 
       QString name() const { return _name; }
-
       };
 
 //---------------------------------------------------------
@@ -81,7 +82,6 @@ class BoolPreferenceItem : public PreferenceItem {
       inline bool isModified() const;
 
       };
-
 
 //---------------------------------------------------------
 //   IntPreferenceItem
@@ -122,7 +122,7 @@ class DoublePreferenceItem : public PreferenceItem {
 //---------------------------------------------------------
 class StringPreferenceItem : public PreferenceItem {
       QString _initialValue;
-      QLineEdit* _editor;
+      QWidget* _editor;
 
    public:
       StringPreferenceItem(QString name);
@@ -132,7 +132,23 @@ class StringPreferenceItem : public PreferenceItem {
       inline void update();
       inline void setDefaultValue();
       inline bool isModified() const;
+
+   protected:
+      void setEditor(QWidget* editor);
+      QString initialValue() const { return _initialValue; }
       };
+
+//---------------------------------------------------------
+//   FilePreferenceItem
+//---------------------------------------------------------
+class FilePreferenceItem : public StringPreferenceItem {
+
+   public:
+      FilePreferenceItem(QString name);
+
+   private slots:
+      bool getFile() const;
+};
 
 //---------------------------------------------------------
 //   ColorPreferenceItem
@@ -180,6 +196,7 @@ class PreferencesListWidget : public QTreeWidget, public PreferenceVisitor {
       void visit(QString key, QTreeWidgetItem* parent, DoublePreference*);
       void visit(QString key, QTreeWidgetItem* parent, BoolPreference*);
       void visit(QString key, QTreeWidgetItem* parent, StringPreference*);
+      void visit(QString key, QTreeWidgetItem* parent, FilePreference*);
       void visit(QString key, QTreeWidgetItem* parent, ColorPreference*);
 
    public slots:

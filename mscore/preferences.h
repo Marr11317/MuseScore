@@ -231,6 +231,12 @@ class StringPreference: public Preference {
       virtual void accept(QString, QTreeWidgetItem*, PreferenceVisitor&) override;
       };
 
+class FilePreference : public StringPreference {
+   public:
+      FilePreference(QString defaultValue, bool showInAdvancedList = true);
+      virtual void accept(QString, QTreeWidgetItem*, PreferenceVisitor&) override;
+      };
+
 class ColorPreference: public Preference {
    public:
       ColorPreference(QColor defaultValue, bool showInAdvancedList = true);

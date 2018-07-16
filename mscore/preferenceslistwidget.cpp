@@ -19,6 +19,7 @@
 
 #include "preferenceslistwidget.h"
 #include "preferencestreewidget_delegate.h"
+#include "icons.h"
 
 namespace Ms {
 
@@ -182,6 +183,13 @@ void PreferencesListWidget::visit(QString key, QTreeWidgetItem* parent, BoolPref
 void PreferencesListWidget::visit(QString key, QTreeWidgetItem* parent, StringPreference*)
       {
       StringPreferenceItem* item = new StringPreferenceItem(key);
+      parent->addChild(item);
+      addPreference(item);
+      }
+
+void PreferencesListWidget::visit(QString key, QTreeWidgetItem* parent, FilePreference*)
+      {
+      FilePreferenceItem* item = new FilePreferenceItem(key);
       parent->addChild(item);
       addPreference(item);
       }
@@ -459,12 +467,12 @@ StringPreferenceItem::StringPreferenceItem(QString name)
         _initialValue(preferences.getString(name)),
         _editor(new QLineEdit)
       {
-      _editor->setText(_initialValue);
+      static_cast<QLineEdit*> (_editor)->setText(_initialValue);
       }
 
 void StringPreferenceItem::save()
       {
-      QString newValue = _editor->text();
+      QString newValue = static_cast<QLineEdit*> (_editor)->text();
       _initialValue = newValue;
       PreferenceItem::save(newValue);
       }
@@ -472,17 +480,39 @@ void StringPreferenceItem::save()
 void StringPreferenceItem::update()
       {
       QString newValue = preferences.getString(name());
-      _editor->setText(newValue);
+      static_cast<QLineEdit*> (_editor)->setText(newValue);
       }
 
 void StringPreferenceItem::setDefaultValue()
       {
-      _editor->setText(preferences.defaultValue(name()).toString());
+      static_cast<QLineEdit*> (_editor)->setText(preferences.defaultValue(name()).toString());
       }
 
 bool StringPreferenceItem::isModified() const
       {
-      return (_initialValue != _editor->text());
+      return (_initialValue != static_cast<QLineEdit*> (_editor)->text());
+      }
+
+FilePreferenceItem::FilePreferenceItem(QString name)
+      : StringPreferenceItem(name)
+      {
+      setEditor(new QPushButton(*icons[int (Icons::fileOpen_ICON)], initialValue()));
+      static_cast<QPushButton*> (editor())->setText(preferences.getString(name()));
+
+      connect(static_cast<QPushButton*> (editor()), &QPushButton::clicked, this, &FilePreferenceItem::getFile);
+      }
+
+bool FilePreferenceItem::getFile() const
+      {
+      QString fileName = QFileDialog::getOpenFileName(
+                       this,
+                       tr("Choose new file"),
+                       static_cast<QPushButton*> (editor())->text(),
+                       (preferences.getBool(PREF_UI_APP_USENATIVEDIALOGS)
+                        ? QFileDialog::Options() : QFileDialog::DontUseNativeDialog)
+                       );
+      if (!fileName.isNull())
+            static_cast<QPushButton*> (editor())->setText(fileName);
       }
 
 

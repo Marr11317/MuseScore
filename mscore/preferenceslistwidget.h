@@ -43,11 +43,11 @@ class PreferenceItem : public QTreeWidgetItem, public QObject {
       QString _name;
 
     protected:
-      void save(QVariant value);
+      void save(QVariant* value);
 
     public:
       PreferenceItem();
-      PreferenceItem(QString name);
+      PreferenceItem(const QString& name);
 
       virtual QWidget* editor() const = 0;
       virtual void save() = 0;
@@ -55,7 +55,7 @@ class PreferenceItem : public QTreeWidgetItem, public QObject {
       virtual void setDefaultValue() = 0;
       virtual bool isModified() const = 0;
 
-      void setVisible(bool visible);
+      void setVisible(const bool visible);
 
       QString name() const { return _name; }
       };
@@ -69,13 +69,13 @@ class BoolPreferenceItem : public PreferenceItem {
       QCheckBox* _editor;
 
    public:
-      BoolPreferenceItem(QString name);
+      BoolPreferenceItem(const QString& name);
 
       QWidget* editor() const {return _editor;}
-      inline void save();
-      inline void update();
-      inline void setDefaultValue();
-      inline bool isModified() const;
+      inline virtual void save() override;
+      inline virtual void update() override;
+      inline virtual void setDefaultValue() override;
+      inline virtual bool isModified() const override;
 
       };
 
@@ -87,13 +87,13 @@ class IntPreferenceItem : public PreferenceItem {
       QSpinBox* _editor;
 
    public:
-      IntPreferenceItem(QString name);
+      IntPreferenceItem(const QString& name);
 
       QWidget* editor() const {return _editor;}
-      inline void save();
-      inline void update();
-      inline void setDefaultValue();
-      inline bool isModified() const;
+      inline virtual void save() override;
+      inline virtual void update() override;
+      inline virtual void setDefaultValue() override;
+      inline virtual bool isModified() const override;
       };
 
 //---------------------------------------------------------
@@ -104,13 +104,13 @@ class DoublePreferenceItem : public PreferenceItem {
       QDoubleSpinBox* _editor;
 
    public:
-      DoublePreferenceItem(QString name);
+      DoublePreferenceItem(const QString& name);
 
       QWidget* editor() const {return _editor;}
-      inline void save();
-      inline void update();
-      inline void setDefaultValue();
-      inline bool isModified() const;
+      inline virtual void save() override;
+      inline virtual void update() override;
+      inline virtual void setDefaultValue() override;
+      inline virtual bool isModified() const override;
       };
 
 //---------------------------------------------------------
@@ -121,13 +121,13 @@ class StringPreferenceItem : public PreferenceItem {
       QLineEdit* _editor;
 
    public:
-      StringPreferenceItem(QString name);
+      StringPreferenceItem(const QString& name);
 
       QWidget* editor() const {return _editor;}
-      inline void save();
-      inline void update();
-      inline void setDefaultValue();
-      inline bool isModified() const;
+      inline virtual void save() override;
+      inline virtual void update() override;
+      inline virtual void setDefaultValue() override;
+      inline virtual bool isModified() const override;
       };
 
 //---------------------------------------------------------
@@ -138,16 +138,17 @@ class FilePreferenceItem : public PreferenceItem {
       QPushButton* _editor;
 
    public:
-      FilePreferenceItem(QString name);
+      FilePreferenceItem(const QString& name);
 
       QWidget* editor() const { return _editor; }
-      inline void save();
-      inline void update();
-      inline void setDefaultValue();
-      inline bool isModified() const;
+      inline virtual void save() override;
+      inline virtual void update() override;
+      inline virtual void setDefaultValue() override;
+      inline virtual bool isModified() const override;
 
    private slots:
       void getFile() const;
+
 };
 
 //---------------------------------------------------------
@@ -158,16 +159,17 @@ class DirPreferenceItem : public PreferenceItem {
       QPushButton* _editor;
 
    public:
-      DirPreferenceItem(QString name);
+      DirPreferenceItem(const QString& name);
 
       QWidget* editor() const { return _editor; }
-      inline void save();
-      inline void update();
-      inline void setDefaultValue();
-      inline bool isModified() const;
+      inline virtual void save() override;
+      inline virtual void update() override;
+      inline virtual void setDefaultValue() override;
+      inline virtual bool isModified() const override;
 
    private slots:
-      bool getDirectory() const;
+      void getDirectory() const;
+
 };
 
 //---------------------------------------------------------
@@ -178,13 +180,13 @@ class ColorPreferenceItem : public PreferenceItem {
       Awl::ColorLabel* _editor;
 
    public:
-      ColorPreferenceItem(QString name);
+      ColorPreferenceItem(const QString& name);
 
       QWidget* editor() const {return _editor;}
-      inline void save();
-      inline void update();
-      inline void setDefaultValue();
-      inline bool isModified() const;
+      inline virtual void save() override;
+      inline virtual void update() override;
+      inline virtual void setDefaultValue() override;
+      inline virtual bool isModified() const override;
       };
 
 
@@ -194,37 +196,41 @@ class ColorPreferenceItem : public PreferenceItem {
 
 class PreferencesListWidget : public QTreeWidget, public PreferenceVisitor {
 
-      QHash<QString, PreferenceItem*> preferenceItems;
+      QHash<QString&, PreferenceItem*>* preferenceItems;
 
       void addPreference(PreferenceItem* item);
       QTreeWidgetItem* findChildByName(const QTreeWidgetItem* parent, const QString& text, const int column) const;
-      int findChildDepth(QTreeWidgetItem* parent) const;
       void recursiveChildList(QList<QTreeWidgetItem*>& list, QTreeWidgetItem* item) const;
-      QList<QTreeWidgetItem*> recursiveChildList(QTreeWidgetItem* parent) const;
-      QList<PreferenceItem*> recursivePreferenceItemList(QTreeWidgetItem* parent) const;
+      QList<QTreeWidgetItem*>& recursiveChildList(const QTreeWidgetItem* parent) const;
+      QList<PreferenceItem*>& recursivePreferenceItemList(const QTreeWidgetItem* parent) const;
 
-      void hideEmptyItems();
+      void hideEmptyItems() const;
 
    public:
       explicit PreferencesListWidget(QWidget* parent = nullptr);
+      ~PreferencesListWidget();
+
       void loadPreferences();
       void updatePreferences();
 
-      std::vector<QString> save();
+      const QHash<const QString, const QVariant>* exportModifications();
+      void importModifications(const QHash<const QString, const QVariant>*);
 
-      void visit(QString key, QTreeWidgetItem* parent, IntPreference*);
-      void visit(QString key, QTreeWidgetItem* parent, DoublePreference*);
-      void visit(QString key, QTreeWidgetItem* parent, BoolPreference*);
-      void visit(QString key, QTreeWidgetItem* parent, StringPreference*);
-      void visit(QString key, QTreeWidgetItem* parent, FilePreference*);
-      void visit(QString key, QTreeWidgetItem* parent, DirPreference*);
-      void visit(QString key, QTreeWidgetItem* parent, ColorPreference*);
+      const std::vector<const QString&>& save();
+
+      virtual void visit(const QString& key, QTreeWidgetItem* parent, IntPreference*)    override;
+      virtual void visit(const QString& key, QTreeWidgetItem* parent, DoublePreference*) override;
+      virtual void visit(const QString& key, QTreeWidgetItem* parent, BoolPreference*)   override;
+      virtual void visit(const QString& key, QTreeWidgetItem* parent, StringPreference*) override;
+      virtual void visit(const QString& key, QTreeWidgetItem* parent, FilePreference*)   override;
+      virtual void visit(const QString& key, QTreeWidgetItem* parent, DirPreference*)    override;
+      virtual void visit(const QString& key, QTreeWidgetItem* parent, ColorPreference*)  override;
 
    public slots:
       void filter(const QString& query);
       void resetAdvancedPreferenceToDefault();
-      void showAll(bool all = true);
-      void filterVisiblePreferences(const QString& query, bool all);
+      void showAll(const bool all = true);
+      void filterVisiblePreferences(const QString& query, const bool all);
 };
 
 } // namespace Ms

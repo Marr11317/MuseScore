@@ -75,7 +75,7 @@ void Preferences::init(bool storeInMemoryOnly)
             {PREF_APP_AUTOSAVE_AUTOSAVETIME,                       new IntPreference(2 /* minutes */, false)},
             {PREF_APP_AUTOSAVE_USEAUTOSAVE,                        new BoolPreference(true, false)},
             {PREF_APP_KEYBOARDLAYOUT,                              new StringPreference("US - International")},
-            {PREF_APP_PATHS_INSTRUMENTLIST1,                       new FilePreference(":/data/instruments.xml", QCoreApplication::translate("instrument_list", "Instrument List") + " (*.xml)",, false)},
+            {PREF_APP_PATHS_INSTRUMENTLIST1,                       new FilePreference(":/data/instruments.xml", QCoreApplication::translate("instrument_list", "Instrument List") + " (*.xml)", false)},
             {PREF_APP_PATHS_INSTRUMENTLIST2,                       new FilePreference("", QCoreApplication::translate("instrument_list", "Instrument List") + " (*.xml)", false)},
             {PREF_APP_PATHS_MYIMAGES,                              new DirPreference(QFileInfo(QString("%1/%2").arg(wd).arg(QCoreApplication::translate("images_directory", "Images"))).absoluteFilePath(), false)},
             {PREF_APP_PATHS_MYPLUGINS,                             new DirPreference(QFileInfo(QString("%1/%2").arg(wd).arg(QCoreApplication::translate("plugins_directory", "Plugins"))).absoluteFilePath(), false)},
@@ -91,7 +91,7 @@ void Preferences::init(bool storeInMemoryOnly)
             {PREF_APP_USESINGLEPALETTE,                            new BoolPreference(false)},
             {PREF_APP_STARTUP_FIRSTSTART,                          new BoolPreference(true)},
             {PREF_APP_STARTUP_SESSIONSTART,                        new EnumPreference(QVariant::fromValue(SessionStart::SCORE), false)},
-            {PREF_APP_STARTUP_STARTSCORE,                          new FilePreference(":/data/My_First_Score.mscz", QCoreApplication::translate("MuseScore_files", "MuseScore Files") + " (*.mscz *.mscx);;" + QCoreApplication::translate("All") + " (*)", false)},
+            {PREF_APP_STARTUP_STARTSCORE,                          new FilePreference(":/data/My_First_Score.mscz", QCoreApplication::translate("MuseScore_files", "MuseScore Files") + " (*.mscz *.mscx);;" + QCoreApplication::translate("MuseScore_files", "All") + " (*)", false)},
             {PREF_APP_WORKSPACE,                                   new StringPreference("Basic", false)},
             {PREF_EXPORT_AUDIO_SAMPLERATE,                         new IntPreference(44100, false)},
             {PREF_EXPORT_MP3_BITRATE,                              new IntPreference(128, false)},
@@ -454,7 +454,7 @@ QString FilePreference::filter() const
 }
 
 FilePreference::FilePreference(QString defaultValue, QString filter, bool showInAdvancedList)
-      : Preference(defaultValue, QMetaType::QFile, showInAdvancedList),
+      : Preference(defaultValue, QMetaType::QString, showInAdvancedList),
         _filter(filter)
       {}
 
@@ -464,7 +464,7 @@ void FilePreference::accept(QString key, QTreeWidgetItem* parent, PreferenceVisi
       }
 
 DirPreference::DirPreference(QString defaultValue, bool showInAdvancedList)
-      : Preference(defaultValue, QMetaType::QDir, showInAdvancedList)
+      : Preference(defaultValue, QMetaType::QString, showInAdvancedList)
       {}
 
 void DirPreference::accept(QString key, QTreeWidgetItem* parent, PreferenceVisitor& v)
@@ -488,7 +488,5 @@ EnumPreference::EnumPreference(QVariant defaultValue, bool showInAdvancedList)
 void EnumPreference::accept(QString, QTreeWidgetItem*, PreferenceVisitor&)
       {
       }
-
-
 
 } // namespace Ms

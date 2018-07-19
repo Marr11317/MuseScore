@@ -82,6 +82,10 @@ class PreferenceDialog : public AbstractDialog, private Ui::PrefsDialogBase {
       void changeSoundfontPaths();
       void updateTranslationClicked();
 
+      void importChangesFromAdvanced();
+      inline void exportChangesToAdvanced();
+      QHash<QString, Preference*> diffPrefsWithAdvanced();
+
    signals:
       void preferencesChanged();
       void mixerPreferencesChanged(bool showMidiControls);

@@ -52,6 +52,26 @@ AdvancedPreferencesWidget::~AdvancedPreferencesWidget()
       delete ui;
       }
 
+void AdvancedPreferencesWidget::updatePreferences() const
+      {
+      ui->treePreferencesWidget->updatePreferences();
+      }
+
+const std::vector<const QString&> AdvancedPreferencesWidget::save()
+      {
+      return ui->treePreferencesWidget->save();
+      }
+
+void AdvancedPreferencesWidget::importModifications(const QHash<const QString, const QVariant>* changedPreferences)
+      {
+      ui->treePreferencesWidget->importModifications(changedPreferences);
+      }
+
+const QHash<const QString, const QVariant>* AdvancedPreferencesWidget::exportModifications() const
+      {
+      return ui->treePreferencesWidget->exportModifications();
+      }
+
 void AdvancedPreferencesWidget::enableResetPreferenceToDefault()
       {
       for (QTreeWidgetItem* item: ui->treePreferencesWidget->selectedItems()) {
@@ -70,8 +90,6 @@ void AdvancedPreferencesWidget::writeSettings()
       settings.beginGroup(objectName());
       settings.setValue("showAll", ui->showAllCheckBox->isChecked());
       settings.endGroup();
-
-      MuseScore::saveGeometry(this);
       }
 
 void AdvancedPreferencesWidget::readSettings()
@@ -82,8 +100,6 @@ void AdvancedPreferencesWidget::readSettings()
             ui->showAllCheckBox->setChecked(settings.value("showAll", false).toBool());
             settings.endGroup();
             }
-
-      MuseScore::restoreGeometry(this);
       }
 
 } // Ms

@@ -153,7 +153,7 @@ PreferenceDialog::PreferenceDialog(QWidget* parent)
       connect(myPluginsButton, SIGNAL(clicked()), SLOT(selectPluginsDirectory()));
       connect(myImagesButton, SIGNAL(clicked()), SLOT(selectImagesDirectory()));
       connect(mySoundfontsButton, SIGNAL(clicked()), SLOT(changeSoundfontPaths()));
-       connect(myExtensionsButton, SIGNAL(clicked()), SLOT(selectExtensionsDirectory()));
+      connect(myExtensionsButton, SIGNAL(clicked()), SLOT(selectExtensionsDirectory()));
 
 
       connect(updateTranslation, SIGNAL(clicked()), SLOT(updateTranslationClicked()));
@@ -310,7 +310,7 @@ void PreferenceDialog::updateValues(bool useDefaultValues)
       if (useDefaultValues)
             preferences.setReturnDefaultValues(true);
 
-      advancedWidget->updatePreferences();
+      advancedWidget->plugin();
 
       rcGroup->setChecked(preferences.getBool(PREF_IO_MIDI_USEREMOTECONTROL));
       advanceOnRelease->setChecked(preferences.getBool(PREF_IO_MIDI_ADVANCEONRELEASE));
@@ -1072,7 +1072,7 @@ void PreferenceDialog::apply()
       emit preferencesChanged();
       preferences.save();
       mscore->startAutoSave();
-      }
+      } // apply();
 
 //---------------------------------------------------------
 //   resetAllValues
@@ -1294,6 +1294,360 @@ void PreferenceDialog::updateTranslationClicked()
       r.selectLanguagesTab();
       r.exec();
       }
+
+//---------------------------------------------------------
+//  importChangesFromAdvanced
+//---------------------------------------------------------
+
+void PreferenceDialog::importChangesFromAdvanced()
+      {
+      const QHash<const QString&, const QVariant*>* changedPreferences = advancedWidget->exportModifications();
+      for(QString& name : changedPreferences->keys()) {
+
+            }
+      }
+
+//---------------------------------------------------------
+//  exportChangesToAdvanced
+//---------------------------------------------------------
+
+void PreferenceDialog::exportChangesToAdvanced()
+      {
+      QHash<const QString, const QVariant>* changedPreferences = new QHash<const QString, const QVariant>();
+
+
+      preferences.setPreference(PREF_APP_AUTOSAVE_AUTOSAVETIME, autoSaveTime->value());
+      preferences.setPreference(PREF_APP_AUTOSAVE_USEAUTOSAVE, autoSave->isChecked());
+      preferences.setPreference(PREF_APP_PATHS_INSTRUMENTLIST1, instrumentList1->text());
+      preferences.setPreference(PREF_APP_PATHS_INSTRUMENTLIST2, instrumentList2->text());
+      preferences.setPreference(PREF_APP_PATHS_MYIMAGES, myImages->text());
+      preferences.setPreference(PREF_APP_PATHS_MYPLUGINS, myPlugins->text());
+      preferences.setPreference(PREF_APP_PATHS_MYSCORES, myScores->text());
+      preferences.setPreference(PREF_APP_PATHS_MYSOUNDFONTS, mySoundfonts->text());
+      preferences.setPreference(PREF_APP_PATHS_MYSTYLES, myStyles->text());
+      preferences.setPreference(PREF_APP_PATHS_MYTEMPLATES, myTemplates->text());
+      preferences.setPreference(PREF_APP_PATHS_MYEXTENSIONS, myExtensions->text());
+      preferences.setPreference(PREF_APP_STARTUP_STARTSCORE, sessionScore->text());
+
+
+
+      ///***************
+      /// Page General
+      ///***************
+      {
+#ifndef PREF_NO_SUPPORT_FOR_ENUM
+      {
+      SessionStart session;
+      if (lastSession->isChecked())
+            session = SessionStart::LAST;
+      else if (newSession->isChecked())
+            session = SessionStart::NEW;
+      else if (scoreSession->isChecked())
+            session = SessionStart::SCORE;
+      else if (emptySession->isChecked()) // the if is just in case
+            session = SessionStart::EMPTY;
+
+      if ((char) preferences.sessionStart() != (char) session)
+            changedPreferences->insert(PREF_APP_STARTUP_SESSIONSTART, QVariant(session));
+      }
+#endif // PREF_NO_SUPPORT_FOR_ENUM
+
+      if(preferences.getBool(PREF_UI_APP_STARTUP_CHECKUPDATE) != checkUpdateStartup->isChecked())
+            changedPreferences->insert(PREF_UI_APP_STARTUP_CHECKUPDATE, QVariant(checkUpdateStartup->isChecked()));
+
+      if(preferences.getBool(PREF_UI_APP_STARTUP_SHOWNAVIGATOR) != navigatorShow->isChecked())
+            changedPreferences->insert(PREF_UI_APP_STARTUP_SHOWNAVIGATOR, QVariant(navigatorShow->isChecked()));
+
+      if(preferences.getBool(PREF_UI_APP_STARTUP_SHOWPLAYPANEL) != playPanelShow->isChecked())
+            changedPreferences->insert(PREF_UI_APP_STARTUP_SHOWPLAYPANEL, QVariant(playPanelShow->isChecked()));
+
+      if(preferences.getBool(PREF_UI_APP_STARTUP_SHOWSPLASHSCREEN) != showSplashScreen->isChecked())
+            changedPreferences->insert(PREF_UI_APP_STARTUP_SHOWSPLASHSCREEN, QVariant(showSplashScreen->isChecked()));
+
+      if(preferences.getBool(PREF_UI_APP_STARTUP_SHOWSTARTCENTER) != showStartcenter->isChecked())
+            changedPreferences->insert(PREF_UI_APP_STARTUP_SHOWSTARTCENTER, QVariant(showStartcenter->isChecked()));
+
+      {
+      int lang = language->itemData(language->currentIndex()).toInt();
+      QString l = (lang == 0 ? "system" : mscore->languages().at(lang).key);
+      if (l != preferences.getString(PREF_UI_APP_LANGUAGE))
+            changedPreferences->insert(PREF_UI_APP_LANGUAGE, QVariant(l));
+      }
+
+      // This is not necessary for the moment, since EnumPreferences of is not
+      // implemented for now in the advancedPreferences.
+#ifndef PREF_NO_SUPPORT_FOR_ENUM
+      {
+      MuseScoreStyleType style;
+      const QString currentText = styleName->currentText();
+      if (currentText == tr("Light"))
+            style = MuseScoreStyleType::LIGHT_FUSION;
+      else if (currentText == tr("Dark"))
+            style = MuseScoreStyleType::DARK_FUSION;
+      else
+            qDebug() << "Unknown MuseScoreStyleType: " << styleName->currentText() << endl;
+
+      if ((char) style != (char) preferences.globalStyle())
+            changedPreferences->insert(PREF_UI_APP_GLOBALSTYLE, QVariant(style));
+      }
+#endif // PREF_NO_SUPPORT_FOR_ENUM
+
+      if(preferences.getInt(PREF_UI_THEME_ICONWIDTH) != iconWidth->value())
+            changedPreferences->insert(PREF_UI_THEME_ICONWIDTH, QVariant(iconWidth->value()));
+
+      if(preferences.getInt(PREF_UI_THEME_ICONHEIGHT) != iconHeight->value())
+            changedPreferences->insert(PREF_UI_THEME_ICONHEIGHT, QVariant(iconHeight->value()));
+      }
+
+      ///***************
+      /// Page canvas
+      ///***************
+      {
+      if (preferences.getBool(PREF_UI_CANVAS_BG_USECOLOR) != bgColorButton->isChecked())
+            changedPreferences->insert(PREF_UI_CANVAS_BG_USECOLOR, QVariant(bgColorButton->isChecked()));
+
+      if (preferences.getColor(PREF_UI_CANVAS_BG_COLOR) != bgColorLabel->color())
+            changedPreferences->insert(PREF_UI_CANVAS_BG_COLOR, QVariant(bgColorLabel->color()));
+
+      if (preferences.getBool(PREF_UI_CANVAS_FG_USECOLOR) != fgColorButton->isChecked())
+            changedPreferences->insert(PREF_UI_CANVAS_FG_USECOLOR, QVariant(fgColorButton->isChecked()));
+
+      if (preferences.getColor(PREF_UI_CANVAS_FG_COLOR) != fgColorLabel->color())
+            changedPreferences->insert(PREF_UI_CANVAS_FG_COLOR, QVariant(fgColorLabel->color()));
+
+      if (preferences.getString(PREF_UI_CANVAS_BG_WALLPAPER) != bgWallpaper->text())
+            changedPreferences->insert(PREF_UI_CANVAS_BG_WALLPAPER, QVariant(bgWallpaper->text()));
+
+      if (preferences.getString(PREF_UI_CANVAS_FG_WALLPAPER) != fgWallpaper->text())
+            changedPreferences->insert(PREF_UI_CANVAS_FG_WALLPAPER, QVariant(fgWallpaper->text()));
+
+      if (preferences.getBool(PREF_UI_CANVAS_MISC_ANTIALIASEDDRAWING) != drawAntialiased->isChecked())
+            changedPreferences->insert(PREF_UI_CANVAS_MISC_ANTIALIASEDDRAWING, QVariant(drawAntialiased->isChecked()));
+
+      if (preferences.getInt(PREF_UI_CANVAS_MISC_SELECTIONPROXIMITY) != proximity->value())
+            changedPreferences->insert(PREF_UI_CANVAS_MISC_SELECTIONPROXIMITY, QVariant(proximity->value()));
+
+      if (preferences.getBool(PREF_UI_CANVAS_SCROLL_LIMITSCROLLAREA) != limitScrollArea->isChecked())
+            changedPreferences->insert(PREF_UI_CANVAS_SCROLL_LIMITSCROLLAREA, QVariant(limitScrollArea->isChecked()));
+
+      if (preferences.getBool(PREF_UI_CANVAS_SCROLL_VERTICALORIENTATION) != pageVertical->isChecked())
+            changedPreferences->insert(PREF_UI_CANVAS_SCROLL_VERTICALORIENTATION, QVariant(pageVertical->isChecked()));
+      }
+
+      ///***************
+      /// Page Note input
+      ///***************
+      {
+
+      }
+
+      ///***************
+      /// Page Score
+      ///***************
+      {
+      if (defaultStyle->text() != preferences.getString(PREF_SCORE_STYLE_DEFAULTSTYLEFILE))
+            changedPreferences->insert(PREF_SCORE_STYLE_DEFAULTSTYLEFILE, QVariant(defaultStyle->text()));
+
+      if (partStyle->text() != preferences.getString(PREF_SCORE_STYLE_PARTSTYLEFILE))
+            changedPreferences->insert(PREF_SCORE_STYLE_PARTSTYLEFILE, QVariant(partStyle->text()));
+
+      if (preferences.getInt(PREF_SCORE_MAGNIFICATION) != (scale->value() / 100.0))
+            changedPreferences->insert(PREF_SCORE_MAGNIFICATION, QVariant((scale->value() / 100.0)));
+
+      if (showMidiControls->isChecked() != preferences.getBool(PREF_IO_MIDI_SHOWCONTROLSINMIXER))
+            changedPreferences->insert(PREF_IO_MIDI_SHOWCONTROLSINMIXER, QVariant(showMidiControls->isChecked()));
+
+      if (playChordOnAddNote->isChecked() != preferences.getBool(PREF_SCORE_CHORD_PLAYONADDNOTE))
+            changedPreferences->insert(PREF_SCORE_CHORD_PLAYONADDNOTE, QVariant(playChordOnAddNote->isChecked()));
+
+      if (preferences.getInt(PREF_SCORE_NOTE_DEFAULTPLAYDURATION) != defaultPlayDuration->value())
+            changedPreferences->insert(PREF_SCORE_NOTE_DEFAULTPLAYDURATION, QVariant(defaultPlayDuration->value()));
+
+      if (preferences.getBool(PREF_SCORE_NOTE_PLAYONCLICK) != playNotes->isChecked())
+            changedPreferences->insert(PREF_SCORE_NOTE_PLAYONCLICK, QVariant(playNotes->isChecked()));
+      }
+
+      ///***************
+      /// Page I/O
+      ///***************
+      {
+      if (preferences.getBool(PREF_IO_MIDI_ADVANCEONRELEASE) != advanceOnRelease->isChecked())
+            changedPreferences->insert(PREF_IO_MIDI_ADVANCEONRELEASE, QVariant(advanceOnRelease->isChecked()));
+
+      if (preferences.getBool(PREF_IO_MIDI_ENABLEINPUT) != enableMidiInput->isChecked())
+            changedPreferences->insert(PREF_IO_MIDI_ENABLEINPUT, QVariant(enableMidiInput->isChecked()));
+
+      if (preferences.getBool(PREF_IO_MIDI_EXPANDREPEATS) != expandRepeats->isChecked())
+            changedPreferences->insert(PREF_IO_MIDI_EXPANDREPEATS, QVariant(expandRepeats->isChecked()));
+
+      if (preferences.getBool(PREF_IO_MIDI_EXPORTRPNS) != exportRPNs->isChecked())
+            changedPreferences->insert(PREF_IO_MIDI_EXPORTRPNS, QVariant(exportRPNs->isChecked()));
+
+      if (preferences.getInt(PREF_IO_MIDI_REALTIMEDELAY) != realtimeDelay->value())
+            changedPreferences->insert(PREF_IO_MIDI_REALTIMEDELAY, QVariant(realtimeDelay->value()));
+
+      if (preferences.getBool(PREF_IO_MIDI_USEREMOTECONTROL) != rcGroup->isChecked())
+            changedPreferences->insert(PREF_IO_MIDI_USEREMOTECONTROL, QVariant(rcGroup->isChecked()));
+
+      if (preferences.getInt(PREF_IO_OSC_PORTNUMBER) != oscPort->value())
+            changedPreferences->insert(PREF_IO_OSC_PORTNUMBER, QVariant(oscPort->value()));
+
+      if (preferences.getBool(PREF_IO_OSC_USEREMOTECONTROL) != oscServer->isChecked())
+            changedPreferences->insert(PREF_IO_OSC_USEREMOTECONTROL, QVariant(oscServer->isChecked()));
+
+      if (preferences.getBool(PREF_IO_JACK_USEJACKAUDIO) != (jackDriver->isChecked() && useJackAudio->isChecked()))
+            changedPreferences->insert(PREF_IO_JACK_USEJACKAUDIO, QVariant(jackDriver->isChecked() && useJackAudio->isChecked()));
+
+      if (preferences.getBool(PREF_IO_JACK_USEJACKMIDI) != (jackDriver->isChecked() && useJackMidi->isChecked()))
+            changedPreferences->insert(PREF_IO_JACK_USEJACKMIDI, QVariant(jackDriver->isChecked() && useJackMidi->isChecked()));
+
+      if (preferences.getBool(PREF_IO_JACK_TIMEBASEMASTER) != becomeTimebaseMaster->isChecked())
+            changedPreferences->insert(PREF_IO_JACK_TIMEBASEMASTER, QVariant(becomeTimebaseMaster->isChecked()));
+
+      if (preferences.getBool(PREF_IO_JACK_REMEMBERLASTCONNECTIONS) != rememberLastMidiConnections->isChecked())
+            changedPreferences->insert(PREF_IO_JACK_REMEMBERLASTCONNECTIONS, QVariant(rememberLastMidiConnections->isChecked()));
+
+      if (preferences.getBool(PREF_IO_JACK_USEJACKTRANSPORT) != (jackDriver->isChecked() && useJackTransport->isChecked()))
+            changedPreferences->insert(PREF_IO_JACK_USEJACKTRANSPORT, QVariant(jackDriver->isChecked() && useJackTransport->isChecked()));
+
+      if (preferences.getBool(PREF_IO_ALSA_USEALSAAUDIO) != alsaDriver->isChecked())
+            changedPreferences->insert(PREF_IO_ALSA_USEALSAAUDIO, QVariant(alsaDriver->isChecked()));
+
+      if (preferences.getBool(PREF_IO_PORTAUDIO_USEPORTAUDIO) != portaudioDriver->isChecked())
+            changedPreferences->insert(PREF_IO_PORTAUDIO_USEPORTAUDIO, QVariant(portaudioDriver->isChecked()));
+
+      if (preferences.getBool(PREF_IO_PULSEAUDIO_USEPULSEAUDIO) != pulseaudioDriver->isChecked())
+            changedPreferences->insert(PREF_IO_PULSEAUDIO_USEPULSEAUDIO, QVariant(pulseaudioDriver->isChecked()));
+
+#ifdef USE_ALSA
+      if (preferences.getString(PREF_IO_ALSA_DEVICE) != alsaDevice->text())
+            changedPreferences->insert(PREF_IO_ALSA_DEVICE, QVariant(alsaDevice->text()));
+
+      if (preferences.getString(PREF_IO_ALSA_SAMPLERATE) != alsaSampleRate->currentData().toInt())
+            changedPreferences->insert(PREF_IO_ALSA_SAMPLERATE, QVariant(alsaSampleRate->currentData().toInt()));
+
+      if (preferences.getString(PREF_IO_ALSA_PERIODSIZE) != alsaPeriodSize->currentData().toInt())
+            changedPreferences->insert(PREF_IO_ALSA_PERIODSIZE, QVariant(alsaPeriodSize->currentData().toInt()));
+
+      if (preferences.getString(PREF_IO_ALSA_FRAGMENTS) != alsaFragments->value())
+            changedPreferences->insert(PREF_IO_ALSA_FRAGMENTS, QVariant(alsaFragments->value()));
+#endif // USE_ALSA
+
+#ifdef USE_PORTAUDIO
+      if (portAudioIsUsed && !noSeq) {
+            Portaudio* audio = static_cast<Portaudio*>(seq->driver());
+            if (audio->deviceIndex(portaudioApi->currentIndex(), portaudioDevice->currentIndex())
+                != preferences.getInt(PREF_IO_PORTAUDIO_DEVICE)) {
+                  changedPreferences->insert(PREF_IO_PORTAUDIO_DEVICE,
+                                             QVariant(audio->deviceIndex(portaudioApi->currentIndex(),
+                                                                             portaudioDevice->currentIndex())));
+                  }
+            }
+#endif // USE_PORTAUDIO
+
+#ifdef USE_PORTMIDI
+      if (portMidiInput->currentText() != preferences.getString(PREF_IO_PORTMIDI_INPUTDEVICE))
+           changedPreferences->insert(PREF_IO_PORTMIDI_INPUTDEVICE, QVariant(portMidiInput->currentText()));
+
+      if (portMidiOutput->currentText() != preferences.getString(PREF_IO_PORTMIDI_OUTPUTDEVICE))
+           changedPreferences->insert(PREF_IO_PORTMIDI_OUTPUTDEVICE, QVariant(portMidiOutput->currentText()));
+
+      if (portMidiOutputLatencyMilliseconds->value() != preferences.getString(PREF_IO_PORTMIDI_OUTPUTLATENCYMILLISECONDS))
+           changedPreferences->insert(PREF_IO_PORTMIDI_OUTPUTDEVICE, QVariant(portMidiOutputLatencyMilliseconds->value()));
+#endif // USE_PORTMIDI
+
+      if (warnPitchRange->isChecked() != preferences.getBool(PREF_SCORE_NOTE_WARNPITCHRANGE))
+            changedPreferences->insert(PREF_SCORE_NOTE_WARNPITCHRANGE, QVariant(warnPitchRange->isChecked()));
+      }
+
+      ///***************
+      /// Page import
+      ///***************
+      {
+      if (preferences.getBool(PREF_IMPORT_MUSICXML_IMPORTBREAKS) != importBreaks->isChecked())
+            changedPreferences->insert(PREF_IMPORT_MUSICXML_IMPORTBREAKS, importBreaks->isChecked());
+
+      if (preferences.getBool(PREF_IMPORT_MUSICXML_IMPORTLAYOUT) != importLayout->isChecked())
+            changedPreferences->insert(PREF_IMPORT_MUSICXML_IMPORTLAYOUT, importLayout->isChecked());
+
+      {
+      QString importStyleFileString = (useImportStyleFile->isChecked() ? importStyleFile->text() : "");
+      if (preferences.getString(PREF_IMPORT_STYLE_STYLEFILE) != importStyleFileString)
+            changedPreferences->insert(PREF_IMPORT_STYLE_STYLEFILE, QVariant(importStyleFileString));
+      }
+
+      if (importCharsetListGP->currentText() != preferences.getString(PREF_IMPORT_GUITARPRO_CHARSET))
+            changedPreferences->insert(PREF_IMPORT_GUITARPRO_CHARSET, QVariant(importCharsetListGP->currentText()));
+
+      if (importCharsetListOve->currentText() != preferences.getString(PREF_IMPORT_OVERTURE_CHARSET))
+            changedPreferences->insert(PREF_IMPORT_OVERTURE_CHARSET, QVariant(importCharsetListOve->currentText()));
+
+      {
+      int ticks = MScore::division / 4;
+      switch(shortestNote->currentIndex()) {
+            case 0: ticks = MScore::division;    break;
+            case 1: ticks = MScore::division / 2;  break;
+            case 2: ticks = MScore::division / 4;  break;
+            case 3: ticks = MScore::division / 8;  break;
+            case 4: ticks = MScore::division / 16; break;
+            }
+      if(preferences.getInt(PREF_IO_MIDI_SHORTESTNOTE) != ticks)
+            changedPreferences->insert(PREF_IO_MIDI_SHORTESTNOTE, QVariant(ticks));
+      }
+      }
+
+      ///***************
+      /// Page export
+      ///***************
+      {
+      preferences.setPreference(PREF_EXPORT_AUDIO_SAMPLERATE, exportAudioSampleRate->currentData().toInt());
+      preferences.setPreference(PREF_EXPORT_MP3_BITRATE, exportMp3BitRate->currentData().toInt());
+      preferences.setPreference(PREF_EXPORT_MUSICXML_EXPORTLAYOUT, exportLayout->isChecked());
+      preferences.setPreference(PREF_EXPORT_PDF_DPI, exportPdfDpi->value());
+
+      if (preferences.getBool(PREF_EXPORT_PDF_DPI) != pngTransparent->isChecked())
+            changedPreferences->insert(PREF_EXPORT_PDF_DPI, pngTransparent->isChecked());
+
+      if (preferences.getInt(PREF_EXPORT_PNG_RESOLUTION) != pngResolution->value())
+            changedPreferences->insert(PREF_EXPORT_PNG_RESOLUTION, pngResolution->value());
+
+      if (preferences.getBool(PREF_EXPORT_PNG_USETRANSPARENCY) != pngTransparent->isChecked())
+            changedPreferences->insert(PREF_EXPORT_PNG_USETRANSPARENCY, pngTransparent->isChecked());
+
+#ifndef PREF_NO_SUPPORT_FOR_ENUM
+      {
+      MusicxmlExportBreaks exportBreaks;
+      if (exportAllBreaks->isChecked())
+            exportBreaks = MusicxmlExportBreaks::ALL;
+      else if (exportManualBreaks->isChecked())
+            exportBreaks = MusicxmlExportBreaks::MANUAL;
+      else if (exportNoBreaks->isChecked()) // the if is just in case
+            exportBreaks = MusicxmlExportBreaks::NO;
+
+      if ((char) exportBreaks != (char) preferences.musicxmlExportBreaks())
+            changedPreferences->insert(PREF_EXPORT_MUSICXML_EXPORTBREAKS, QVariant(exportBreaks));
+      }
+#endif // PREF_NO_SUPPORT_FOR_ENUM
+      }
+
+      ///***************
+      /// Page Shortcuts
+      ///***************
+      {
+
+      }
+
+      ///***************
+      /// Page Update
+      ///***************
+      {
+
+      }
+
+      // Throw the modifications to advancedWidget
+      advancedWidget->importModifications(changedPreferences);
+      }
+
 
 //---------------------------------------------------------
 //   defineShortcutClicked

@@ -112,16 +112,16 @@ enum class MusicxmlExportBreaks : char {
 #define PREF_IMPORT_MUSICXML_IMPORTLAYOUT                   "import/musicXML/import layout"
 #define PREF_IMPORT_OVERTURE_CHARSET                        "import/overture/charset"
 #define PREF_IMPORT_STYLE_STYLEFILE                         "import/style/style file"
-#define PREF_IO_ALSA_DEVICE                                 "io/alsa/device"
-#define PREF_IO_ALSA_FRAGMENTS                              "io/alsa/fragments"
-#define PREF_IO_ALSA_PERIODSIZE                             "io/alsa/period size"
-#define PREF_IO_ALSA_SAMPLERATE                             "io/alsa/sample rate"
-#define PREF_IO_ALSA_USEALSAAUDIO                           "io/alsa/use AlsaAudio"
-#define PREF_IO_JACK_REMEMBERLASTCONNECTIONS                "io/jack/remember last connections"
-#define PREF_IO_JACK_TIMEBASEMASTER                         "io/jack/timebase master"
-#define PREF_IO_JACK_USEJACKAUDIO                           "io/jack/use JackAudio"
-#define PREF_IO_JACK_USEJACKMIDI                            "io/jack/use JackMIDI"
-#define PREF_IO_JACK_USEJACKTRANSPORT                       "io/jack/use JackTransport"
+#define PREF_IO_ALSA_DEVICE                                 "io/Alsa/device"
+#define PREF_IO_ALSA_FRAGMENTS                              "io/Alsa/fragments"
+#define PREF_IO_ALSA_PERIODSIZE                             "io/Alsa/period size"
+#define PREF_IO_ALSA_SAMPLERATE                             "io/Alsa/sample rate"
+#define PREF_IO_ALSA_USEALSAAUDIO                           "io/Alsa/use AlsaAudio"
+#define PREF_IO_JACK_REMEMBERLASTCONNECTIONS                "io/Jack/remember last connections"
+#define PREF_IO_JACK_TIMEBASEMASTER                         "io/Jack/timebase master"
+#define PREF_IO_JACK_USEJACKAUDIO                           "io/Jack/use JackAudio"
+#define PREF_IO_JACK_USEJACKMIDI                            "io/Jack/use JackMIDI"
+#define PREF_IO_JACK_USEJACKTRANSPORT                       "io/Jack/use JackTransport"
 #define PREF_IO_MIDI_ADVANCEONRELEASE                       "io/midi/advance on release"
 #define PREF_IO_MIDI_ENABLEINPUT                            "io/midi/enable input"
 #define PREF_IO_MIDI_EXPANDREPEATS                          "io/midi/expand repeats"
@@ -133,14 +133,14 @@ enum class MusicxmlExportBreaks : char {
 #define PREF_IO_MIDI_USEREMOTECONTROL                       "io/midi/use remote control"
 #define PREF_IO_OSC_PORTNUMBER                              "io/osc/port number"
 #define PREF_IO_OSC_USEREMOTECONTROL                        "io/osc/use remote control"
-#define PREF_IO_PORTAUDIO_DEVICE                            "io/portAudio/device"
-#define PREF_IO_PORTAUDIO_USEPORTAUDIO                      "io/portAudio/use PortAudio"
-#define PREF_IO_PORTMIDI_INPUTBUFFERCOUNT                   "io/portMidi/input buffer count"
-#define PREF_IO_PORTMIDI_INPUTDEVICE                        "io/portMidi/input device"
-#define PREF_IO_PORTMIDI_OUTPUTBUFFERCOUNT                  "io/portMidi/output buffer count"
-#define PREF_IO_PORTMIDI_OUTPUTDEVICE                       "io/portMidi/output device"
-#define PREF_IO_PORTMIDI_OUTPUTLATENCYMILLISECONDS          "io/portMidi/output latency milliseconds"
-#define PREF_IO_PULSEAUDIO_USEPULSEAUDIO                    "io/pulseAudio/use PulseAudio"
+#define PREF_IO_PORTAUDIO_DEVICE                            "io/PortAudio/device"
+#define PREF_IO_PORTAUDIO_USEPORTAUDIO                      "io/PortAudio/use PortAudio"
+#define PREF_IO_PORTMIDI_INPUTBUFFERCOUNT                   "io/PortMidi/input buffer count"
+#define PREF_IO_PORTMIDI_INPUTDEVICE                        "io/PortMidi/input device"
+#define PREF_IO_PORTMIDI_OUTPUTBUFFERCOUNT                  "io/PortMidi/output buffer count"
+#define PREF_IO_PORTMIDI_OUTPUTDEVICE                       "io/PortMidi/output device"
+#define PREF_IO_PORTMIDI_OUTPUTLATENCYMILLISECONDS          "io/PortMidi/output latency (milliseconds)"
+#define PREF_IO_PULSEAUDIO_USEPULSEAUDIO                    "io/PulseAudio/use PulseAudio"
 #define PREF_SCORE_CHORD_PLAYONADDNOTE                      "score/chord/play on add note"
 #define PREF_SCORE_MAGNIFICATION                            "score/magnification"
 #define PREF_SCORE_NOTE_PLAYONCLICK                         "score/note/play on click"
@@ -253,6 +253,7 @@ class ColorPreference: public Preference {
       };
 
 // Support for EnumPreference is currently not fully implemented
+#define PREF_NO_SUPPORT_FOR_ENUM
 class EnumPreference: public Preference {
    public:
       EnumPreference(QVariant defaultValue, bool showInAdvancedList = true);
@@ -364,13 +365,13 @@ inline QDataStream &operator>>(QDataStream &in, T &val)
 
 class PreferenceVisitor {
    public:
-      virtual void visit(QString key, QTreeWidgetItem*, IntPreference*) = 0;
-      virtual void visit(QString key, QTreeWidgetItem*, DoublePreference*) = 0;
-      virtual void visit(QString key, QTreeWidgetItem*, BoolPreference*) = 0;
-      virtual void visit(QString key, QTreeWidgetItem*, StringPreference*) = 0;
-      virtual void visit(QString key, QTreeWidgetItem*, FilePreference*) = 0;
-      virtual void visit(QString key, QTreeWidgetItem*, DirPreference*) = 0;
-      virtual void visit(QString key, QTreeWidgetItem*, ColorPreference*) = 0;
+      virtual void visit(const QString& key, QTreeWidgetItem*, IntPreference*) = 0;
+      virtual void visit(const QString& key, QTreeWidgetItem*, DoublePreference*) = 0;
+      virtual void visit(const QString& key, QTreeWidgetItem*, BoolPreference*) = 0;
+      virtual void visit(const QString& key, QTreeWidgetItem*, StringPreference*) = 0;
+      virtual void visit(const QString& key, QTreeWidgetItem*, FilePreference*) = 0;
+      virtual void visit(const QString& key, QTreeWidgetItem*, DirPreference*) = 0;
+      virtual void visit(const QString& key, QTreeWidgetItem*, ColorPreference*) = 0;
       };
 
 
@@ -379,5 +380,6 @@ class PreferenceVisitor {
 Q_DECLARE_METATYPE(Ms::SessionStart);
 Q_DECLARE_METATYPE(Ms::MusicxmlExportBreaks);
 Q_DECLARE_METATYPE(Ms::MuseScoreStyleType);
+
 
 #endif

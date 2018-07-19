@@ -69,9 +69,6 @@
      <property name="accessibleDescription">
       <string>Access to more advanced preferences</string>
      </property>
-     <property name="horizontalScrollBarPolicy">
-      <enum>Qt::ScrollBarAlwaysOff</enum>
-     </property>
      <property name="alternatingRowColors">
       <bool>true</bool>
      </property>
@@ -82,6 +79,9 @@
       <bool>true</bool>
      </property>
      <property name="sortingEnabled">
+      <bool>true</bool>
+     </property>
+     <property name="animated">
       <bool>true</bool>
      </property>
      <property name="allColumnsShowFocus">

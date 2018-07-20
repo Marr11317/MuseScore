@@ -21,15 +21,24 @@
        <property name="enabled">
         <bool>false</bool>
        </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="toolTip">
+        <string>Reset selected preference(s) to default</string>
+       </property>
+       <property name="accessibleDescription">
+        <string>This button resets the selected preference(s) to default</string>
+       </property>
        <property name="text">
-        <string>Reset to default</string>
+        <string>Reset selection to default</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QLineEdit" name="searchLineEdit">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
@@ -52,13 +61,6 @@
        </property>
       </spacer>
      </item>
-     <item>
-      <widget class="QCheckBox" name="showAllCheckBox">
-       <property name="text">
-        <string>Show all</string>
-       </property>
-      </widget>
-     </item>
     </layout>
    </item>
    <item row="0" column="0">
@@ -68,6 +70,9 @@
      </property>
      <property name="accessibleDescription">
       <string>Access to more advanced preferences</string>
+     </property>
+     <property name="horizontalScrollBarPolicy">
+      <enum>Qt::ScrollBarAlwaysOff</enum>
      </property>
      <property name="alternatingRowColors">
       <bool>true</bool>
@@ -79,9 +84,6 @@
       <bool>true</bool>
      </property>
      <property name="sortingEnabled">
-      <bool>true</bool>
-     </property>
-     <property name="animated">
       <bool>true</bool>
      </property>
      <property name="allColumnsShowFocus">

@@ -331,6 +331,7 @@ add_executable ( ${ExecutableName}
       pathlistdialog.cpp
       exampleview.cpp
       miconengine.cpp
+      #importmidi
       importmidi/importmidi.cpp
       importmidi/importmidi_panel.cpp importmidi/importmidi_operations.cpp
       importmidi/importmidi_model.cpp importmidi/importmidi_delegate.cpp
@@ -346,6 +347,7 @@ add_executable ( ${ExecutableName}
       importmidi/importmidi_voice.cpp importmidi/importmidi_view.cpp importmidi/importmidi_key.cpp
       importmidi/importmidi_tempo.cpp importmidi/importmidi_instrument.cpp
       importmidi/importmidi_chordname.cpp
+
       resourceManager.cpp downloadUtils.cpp
       textcursor.cpp continuouspanel.cpp accessibletoolbutton.cpp scoreaccessibility.cpp
       startcenter.cpp scoreBrowser.cpp scorePreview.cpp scoreInfo.cpp
@@ -354,7 +356,7 @@ add_executable ( ${ExecutableName}
       toolbarEditor.cpp toolbarEditor.h
       abstractdialog.cpp abstractdialog.h
       toolbuttonmenu.cpp
-      # preferences things.
+      # preferences
       prefsdialog.cpp preferences.cpp
       preferenceslistwidget.cpp advancedpreferenceswidget.cpp
       preferencestreewidget_delegate.cpp

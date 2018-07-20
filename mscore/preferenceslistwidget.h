@@ -43,7 +43,7 @@ class PreferenceItem : public QTreeWidgetItem, public QObject {
       QString _name;
 
     protected:
-      void save(QVariant* value);
+      void save(QVariant value);
 
     public:
       PreferenceItem();
@@ -196,15 +196,17 @@ class ColorPreferenceItem : public PreferenceItem {
 
 class PreferencesListWidget : public QTreeWidget, public PreferenceVisitor {
 
-      QHash<QString&, PreferenceItem*>* preferenceItems;
+      QHash<const QString, PreferenceItem*> preferenceItems;
 
       void addPreference(PreferenceItem* item);
-      QTreeWidgetItem* findChildByName(const QTreeWidgetItem* parent, const QString& text, const int column) const;
+      QTreeWidgetItem* findChildByText(const QTreeWidgetItem* parent, const QString& text, const int column) const;
       void recursiveChildList(QList<QTreeWidgetItem*>& list, QTreeWidgetItem* item) const;
-      QList<QTreeWidgetItem*>& recursiveChildList(const QTreeWidgetItem* parent) const;
-      QList<PreferenceItem*>& recursivePreferenceItemList(const QTreeWidgetItem* parent) const;
+      const QList<QTreeWidgetItem*> recursiveChildList(QTreeWidgetItem* parent) const;
+      const QList<PreferenceItem*> recursivePreferenceItemList(QTreeWidgetItem* parent) const;
 
+   private slots:
       void hideEmptyItems() const;
+      void selectAllPreferenceItems() const;
 
    public:
       explicit PreferencesListWidget(QWidget* parent = nullptr);
@@ -213,24 +215,25 @@ class PreferencesListWidget : public QTreeWidget, public PreferenceVisitor {
       void loadPreferences();
       void updatePreferences();
 
-      const QHash<const QString, const QVariant>* exportModifications();
-      void importModifications(const QHash<const QString, const QVariant>*);
-
-      const std::vector<const QString&>& save();
+      void save() const;
 
       virtual void visit(const QString& key, QTreeWidgetItem* parent, IntPreference*)    override;
       virtual void visit(const QString& key, QTreeWidgetItem* parent, DoublePreference*) override;
       virtual void visit(const QString& key, QTreeWidgetItem* parent, BoolPreference*)   override;
       virtual void visit(const QString& key, QTreeWidgetItem* parent, StringPreference*) override;
+      virtual void visit(const QString& key, QTreeWidgetItem* parent, ColorPreference*)  override;
+      // for now, there is no file and directory preferences in the advanced tab:
+      // they are all managed in the other tabs.
       virtual void visit(const QString& key, QTreeWidgetItem* parent, FilePreference*)   override;
       virtual void visit(const QString& key, QTreeWidgetItem* parent, DirPreference*)    override;
-      virtual void visit(const QString& key, QTreeWidgetItem* parent, ColorPreference*)  override;
 
    public slots:
       void filter(const QString& query);
-      void resetAdvancedPreferenceToDefault();
-      void showAll(const bool all = true);
-      void filterVisiblePreferences(const QString& query, const bool all);
+      void resetSelectedPreferencesToDefault();
+      // void showAll(const bool all = true);
+      void reload();
+      // If a "showAll" check box is put, this function combines the filter and the showAll checkBox
+      /// void filterVisiblePreferences(const QString& query, const bool all);
 };
 
 } // namespace Ms

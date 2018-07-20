@@ -21,6 +21,8 @@
 #include "preferencestreewidget_delegate.h"
 #include "icons.h"
 
+#include <QtWidgets>
+
 namespace Ms {
 
 extern QString mscoreGlobalShare;
@@ -33,7 +35,7 @@ PreferencesListWidget::PreferencesListWidget(QWidget* parent)
       sortByColumn(0, Qt::AscendingOrder);
       loadPreferences();
 
-      setItemDelegate(new Ms::PreferencesTreeWidget_Delegate);
+      setItemDelegate(new Ms::PreferencesTreeWidget_Delegate(this));
       expandAll();
       resizeColumnToContents(0);
 
@@ -42,12 +44,10 @@ PreferencesListWidget::PreferencesListWidget(QWidget* parent)
 
 PreferencesListWidget::~PreferencesListWidget()
       {
-      preferenceItems->clear();
-      delete preferenceItems;
       }
 
 // Find the first child of parent with text 'name'
-QTreeWidgetItem* PreferencesListWidget::findChildByName(const QTreeWidgetItem* parent, const QString& text, const int column) const
+QTreeWidgetItem* PreferencesListWidget::findChildByText(const QTreeWidgetItem* parent, const QString& text, const int column) const
       {
       for (int childNum = 0; childNum < parent->childCount(); ++childNum) {
             QTreeWidgetItem* child = parent->child(childNum);
@@ -67,7 +67,7 @@ void PreferencesListWidget::recursiveChildList(QList<QTreeWidgetItem*>& list, QT
 
 // Gets the list af all items in that have parent as a parent, direct or not.
 // This is an overloded function.
-QList<QTreeWidgetItem*> PreferencesListWidget::recursiveChildList(QTreeWidgetItem* parent) const
+const QList<QTreeWidgetItem*> PreferencesListWidget::recursiveChildList(QTreeWidgetItem* parent) const
       {
       QList<QTreeWidgetItem*> list;
 
@@ -79,10 +79,11 @@ QList<QTreeWidgetItem*> PreferencesListWidget::recursiveChildList(QTreeWidgetIte
             }
 
       recursiveChildList(list, parent);
-
       return list;
       }
 
+// for if a 'showAll' checkbox is implemented
+#if 0
 void PreferencesListWidget::showAll(const bool all)
       {
       for (PreferenceItem* item : preferenceItems->values()) {
@@ -92,7 +93,7 @@ void PreferencesListWidget::showAll(const bool all)
       hideEmptyItems();
       }
 
-// This function combines the search filter and the showAll checkBox.
+// This function combines the search filter and the showAll checkBox (which isn't currently implemented)
 void PreferencesListWidget::filterVisiblePreferences(const QString& query, const bool all)
       {
       // if there's no double thing (all and a query) just use one of the two.
@@ -115,43 +116,59 @@ void PreferencesListWidget::filterVisiblePreferences(const QString& query, const
 
       hideEmptyItems();
       }
+#endif
 
-QList<PreferenceItem*> PreferencesListWidget::recursivePreferenceItemList(QTreeWidgetItem* parent) const
+const QList<PreferenceItem*> PreferencesListWidget::recursivePreferenceItemList(QTreeWidgetItem* parent) const
       {
-      QList<PreferenceItem*> preferenceList;
+      QList<PreferenceItem*> preferenceItemList;
       // return an empty list if parent doesn't exist.
       if (!parent) {
             qDebug() << "QList<PreferenceItem*> PreferencesListWidget::recursivePreferenceList(QTreeWidgetItem* parent)"
                         " : invalid parent. Returning an empty list";
-            return preferenceList;
+            return preferenceItemList;
             }
 
       for (QTreeWidgetItem* child : recursiveChildList(parent)) {
-            if (!child->childCount())
-                  preferenceList << static_cast<PreferenceItem*> (child);
+            PreferenceItem* castedChild = dynamic_cast<PreferenceItem*> (child);
+            if (castedChild)
+                  preferenceItemList << castedChild;
             }
 
-      return preferenceList;
+      return preferenceItemList;
       }
 
 void PreferencesListWidget::loadPreferences()
       {
       QTreeWidgetItem* currentParent = invisibleRootItem();
       // iterate over all the preferences.
-      for (QString path : preferences.allPreferences().keys()) {
+      for (QString english : preferences.allPreferences().keys()) {
+            // see preftranslations.h for details.
+            QString path = qApp->translate("MusEScore", english.toLatin1());
             Preference* pref = preferences.allPreferences().value(path);
+#ifdef PREF_NO_SUPPORT_FOR_ENUMS
+            // For now, enums are of Type QMetaType::User.
+            // See EnumPreference class for more details.
+            if (pref->type() == QMetaType::User)
+                  continue;
+
+#endif // PREF_NO_SUPPORT_FOR_ENUMS
+            if(!pref->showInAdvancedList())
+                  continue;
 
             // iterate over the directories of the preferences.
             QStringList dirs = path.split("/");
             for (int dirNumber = 0; dirNumber < dirs.count(); ++dirNumber) {
                   QString currentDir = dirs.at(dirNumber);
                   // check if child already exists.
-                  QTreeWidgetItem* child = findChildByName(currentParent, currentDir, 0);
+                  QTreeWidgetItem* child = findChildByText(currentParent, currentDir, 0);
                   // if doesn't exist, appendChild. if exist, current parent becomes child.
                   if (!child) {
-                        // if it's not a "directory" but it's a "file", then just change it to the corresponding preferenceItem.
-                        if (dirNumber == dirs.count() - 1)
-                              pref->accept(path, currentParent, *this); // send the path, so the preference keeps its name.
+                        // if it's not a "directory" but it's a "file",
+                        // then just change it to the corresponding preferenceItem.
+                        if (dirNumber == dirs.count() - 1) {
+                              // send the english path as first argument, so the preference keeps its name.
+                              pref->accept(english, currentParent, *this);
+                              }
                         else
                               currentParent->addChild(new QTreeWidgetItem(currentParent, QStringList() << currentDir));
                         currentParent = currentParent->child(currentParent->childCount() - 1);
@@ -167,62 +184,8 @@ void PreferencesListWidget::loadPreferences()
 
 void PreferencesListWidget::updatePreferences()
       {
-      for (PreferenceItem* item : preferenceItems->values())
+      for (PreferenceItem* item : preferenceItems.values())
             item->update();
-      }
-
-const QHash<const QString, const QVariant>* PreferencesListWidget::exportModifications()
-      {
-      QHash<const QString, const QVariant>* changedPreferences;
-      for (PreferenceItem* item : preferenceItems->values()) {
-            if (item->isModified()) {
-                  if (qobject_cast<QCheckBox*> (item->editor()))
-                        changedPreferences->insert(item->name(), QVariant(qobject_cast<QCheckBox*> (item->editor())->isChecked()));
-                  else if(qobject_cast<QDoubleSpinBox*> (item->editor()))
-                        changedPreferences->insert(item->name(), QVariant(qobject_cast<QDoubleSpinBox*> (item->editor())->value()));
-                  else if(qobject_cast<QSpinBox*> (item->editor()))
-                        changedPreferences->insert(item->name(), QVariant(qobject_cast<QSpinBox*> (item->editor())->value()));
-                  else if(qobject_cast<QPushButton*> (item->editor()))
-                        changedPreferences->insert(item->name(), QVariant(qobject_cast<QPushButton*> (item->editor())->text()));
-                  else if(qobject_cast<QLineEdit*> (item->editor()))
-                        changedPreferences->insert(item->name(), QVariant(qobject_cast<QLineEdit*> (item->editor())->text()));
-                  else if(qobject_cast<Awl::ColorLabel*> (item->editor()))
-                        changedPreferences->insert(item->name(), QVariant(qobject_cast<Awl::ColorLabel*> (item->editor())->color()));
-                  else
-                        qDebug() << "Couldn't find what PreferenceItem of preference "
-                                 << item->name().toLatin1()
-                                 << " editor was at export. (tried QCheckBox, QDoubleSpinBox, "
-                                    "QSpinBox, QPushButton, QLineEdit and Awl::ColorLabel)";
-                  }
-            }
-
-      return changedPreferences;
-      }
-
-void PreferencesListWidget::importModifications(const QHash<const QString, const QVariant>* changedPreferences)
-      {
-      for (QString name : *changedPreferences) {
-            if (preferenceItems->contains(name)) {
-                  PreferenceItem* pref = preferenceItems->value(name);
-                  if (qobject_cast<QCheckBox*> (pref->editor())) // bool preference
-                        qobject_cast<QCheckBox*> (pref->editor())->setChecked(changedPreferences.value(name).toBool());
-                  else if(qobject_cast<QSpinBox*> (pref->editor())) // int preference
-                        qobject_cast<QSpinBox*> (pref->editor())->setValue(changedPreferences.value(name).toInt());
-                  else if(qobject_cast<QDoubleSpinBox*> (pref->editor())) // double preference
-                        qobject_cast<QDoubleSpinBox*> (pref->editor())->setValue(changedPreferences.value(name).toDouble());
-                  else if(qobject_cast<QPushButton*> (pref->editor())) // file or directory preference
-                        qobject_cast<QPushButton*> (pref->editor())->setText(changedPreferences.value(name).toString());
-                  else if(qobject_cast<QLineEdit*> (pref->editor())) // String preference
-                        qobject_cast<QLineEdit*> (pref->editor())->setText(changedPreferences.value(name).toString());
-                  else if(qobject_cast<Awl::ColorLabel> (pref->editor())) // Color preference
-                        qobject_cast<Awl::ColorLabel*> (pref->editor())->setColor(changedPreferences.value(name));
-                  else
-                        qDebug() << "Couldn't find what PreferenceItem of preference "
-                                 << pref->name().toLatin1()
-                                 << " editor was at import. (tried QCheckBox, QDoubleSpinBox, "
-                                    "QSpinBox, QPushButton, QLineEdit and Awl::ColorLabel)";
-                  }
-            }
       }
 
 void PreferencesListWidget::addPreference(PreferenceItem* item)
@@ -283,57 +246,72 @@ void PreferencesListWidget::visit(const QString& key, QTreeWidgetItem* parent, C
 void PreferencesListWidget::filter(const QString& query)
       {
       QString s = query.toLower();
-      for (PreferenceItem* item : preferenceItems->values())
+      for (PreferenceItem* item : preferenceItems.values())
             item->setVisible(item->name().toLower().contains(s));
       hideEmptyItems();
       }
 
-void PreferencesListWidget::resetAdvancedPreferenceToDefault()
+void PreferencesListWidget::resetSelectedPreferencesToDefault()
       {
       preferences.setReturnDefaultValues(true);
       for (QTreeWidgetItem* item : selectedItems()) {
-            if (item->childCount()) // The item is not a PreferenceItem, since it has children.
-                  continue;
-            PreferenceItem* pref = static_cast<PreferenceItem*>(item);
-            pref->setDefaultValue();
+            PreferenceItem* pref = dynamic_cast<PreferenceItem*> (item);
+            if (pref)
+                  pref->setDefaultValue();
             }
       preferences.setReturnDefaultValues(false);
       }
 
-// Hide the QTreeWidgetItems which are not parent of any VISIBLE PreferenceItem.
+void PreferencesListWidget::reload()
+      {
+      preferenceItems.clear();
+      QTreeWidget::clear();
+      loadPreferences();
+      expandAll();
+      }
+
+// Hide the QTreeWidgetItems which are not parent of any VISIBLE PreferenceItems.
 void PreferencesListWidget::hideEmptyItems() const
       {
       // iterate over all items.
       for(QTreeWidgetItem* parent : recursiveChildList(invisibleRootItem())) {
-            // if the item is already hidden, nothing to do.
+            // If the item is already hidden, nothing to do.
             if (parent->isHidden())
                   continue;
 
-            // Else, hide the parent if it doesn't contain PreferenceItems
+            // Hide the parent if it doesn't contain visible PreferenceItems
             // which aren't hidden.
-            bool toHide = true;
+            bool hide = true;
             for(PreferenceItem* pref : recursivePreferenceItemList(parent)) {
                   if (!pref->isHidden()) {
-                        toHide = false;
+                        hide = false;
                         break;
                         }
                   }
-            parent->setHidden(toHide);
+            parent->setHidden(hide);
             }
       }
 
 
-const std::vector<const QString&>& PreferencesListWidget::save()
+void PreferencesListWidget::save() const
       {
-      std::vector<QString> changedPreferences;
-      for (PreferenceItem* item : preferenceItems->values()) {
-            if (item->isModified()) {
+      for (PreferenceItem* item : preferenceItems.values()) {
+            if (item->isModified())
                   item->save();
-                  changedPreferences.push_back(item->name());
-                  }
             }
+      }
 
-      return changedPreferences;
+// selects all (visible) preferences.
+void PreferencesListWidget::selectAllPreferenceItems() const
+      {
+      for (QTreeWidgetItem* item : recursiveChildList(invisibleRootItem())) {
+             // select all items that can be casted into PreferenceItems.
+            PreferenceItem* pref = dynamic_cast<PreferenceItem*> (item);
+            if (pref && (!item->isHidden()))
+                  pref->setSelected(true);
+            else
+                  pref->setSelected(false);
+            }
       }
 
 //---------------------------------------------------------
@@ -343,10 +321,11 @@ const std::vector<const QString&>& PreferencesListWidget::save()
 PreferenceItem::PreferenceItem(const QString& name)
       : _name(name)
       {
-      setText(0, name.split("/").last());
+      setObjectName("PreferenceItem");
+      setText(0, qApp->translate("MusEScore", name).split("/").last());
       }
 
-void PreferenceItem::save(QVariant* value)
+void PreferenceItem::save(QVariant value)
       {
       preferences.setPreference(name(), value);
       }
@@ -355,11 +334,12 @@ void PreferenceItem::setVisible(const bool visible)
       {
       if (visible) {
             // show the item and it's parents
-            QTreeWidgetItem* item = this;
+            setHidden(false);
+            QTreeWidgetItem* item = this->QTreeWidgetItem::parent();
             while(item) {
                   item->setExpanded(true);
                   item->setHidden(false);
-                  item = item->parent();
+                  item = item->QTreeWidgetItem::parent();
                   }
             }
       else
@@ -373,18 +353,19 @@ void PreferenceItem::setVisible(const bool visible)
 ColorPreferenceItem::ColorPreferenceItem(const QString& name)
       : PreferenceItem(name),
         _initialValue(preferences.getColor(name)),
-        _editor(new Awl::ColorLabel)
+        _editor(new Awl::ColorLabel(treeWidget()))
       {
       _editor->setColor(_initialValue);
       _editor->setText(tr("Click to modify"));
       _editor->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 
-      auto setToolTip = [&](QColor& c)
+      auto setToolTip = [&](const QColor& c)
             {
-            _editor->setToolTip(tr("RGB: %1, %2, %3")
+            _editor->setToolTip(tr("RGBA: (%1, %2, %3, %3)")
                                 .arg(c.red())
                                 .arg(c.green())
-                                .arg(c.blue()));
+                                .arg(c.blue())
+                                .arg(c.alpha()));
             };
       setToolTip(_initialValue);
 
@@ -422,13 +403,13 @@ bool ColorPreferenceItem::isModified() const
 IntPreferenceItem::IntPreferenceItem(const QString& name)
       : PreferenceItem(name),
         _initialValue(preferences.getInt(name)),
-        _editor(new QSpinBox)
-{
-      _editor->setFocusPolicy(Qt::StrongFocus); // disable accepting wheel events
+        _editor(new QSpinBox(treeWidget()))
+      {
+      setObjectName("IntPreferenceItem");
       _editor->setMaximum(INT_MAX);
       _editor->setMinimum(INT_MIN);
       _editor->setValue(_initialValue);
-}
+      }
 
 void IntPreferenceItem::save()
       {
@@ -461,9 +442,10 @@ bool IntPreferenceItem::isModified() const
 DoublePreferenceItem::DoublePreferenceItem(const QString& name)
       : PreferenceItem(name),
         _initialValue(preferences.getDouble(name)),
-        _editor(new QDoubleSpinBox)
+        _editor(new QDoubleSpinBox(treeWidget()))
       {
-      _editor->setFocusPolicy(Qt::StrongFocus); // disable accepting wheel events
+      setObjectName("DoublePreferenceItem");
+      _editor->setFocusPolicy(Qt::ClickFocus); // disable accepting wheel events
       _editor->setMaximum(DBL_MAX);
       _editor->setMinimum(DBL_MIN);
       _editor->setValue(_initialValue);
@@ -487,7 +469,7 @@ void DoublePreferenceItem::setDefaultValue()
       _editor->setValue(preferences.defaultValue(name()).toDouble());
       }
 
-const bool DoublePreferenceItem::isModified() const
+bool DoublePreferenceItem::isModified() const
       {
       return (_initialValue != _editor->value());
       }
@@ -500,16 +482,19 @@ const bool DoublePreferenceItem::isModified() const
 BoolPreferenceItem::BoolPreferenceItem(const QString& name)
       : PreferenceItem(name),
         _initialValue(preferences.getBool(name)),
-        _editor(new QCheckBox)
+        _editor(new QCheckBox(treeWidget()))
       {
+      setObjectName("BoolPreferenceItem");
       _editor->setChecked(_initialValue);
-      auto setText = [&](bool checked)
+      _editor->setCursor(Qt::PointingHandCursor);
+      _editor->setForegroundRole(QPalette::NoRole); // make the text visible, even if selected
+      auto setTexts = [&](bool checked)
             {
             _editor->setText(checked ? tr("true") : tr("false"));
             _editor->setToolTip(checked ? tr("true") : tr("false"));
             };
-      setText(_initialValue);
-      connect(_editor, &QCheckBox::toggled, this, setText);
+      setTexts(_initialValue);
+      connect(_editor, &QCheckBox::toggled, this, setTexts);
       }
 
 void BoolPreferenceItem::save()
@@ -530,7 +515,7 @@ void BoolPreferenceItem::setDefaultValue()
       _editor->setChecked(preferences.defaultValue(name()).toBool());
       }
 
-const bool BoolPreferenceItem::isModified() const
+bool BoolPreferenceItem::isModified() const
       {
       return (_initialValue != _editor->isChecked());
       }
@@ -542,8 +527,9 @@ const bool BoolPreferenceItem::isModified() const
 StringPreferenceItem::StringPreferenceItem(const QString& name)
       : PreferenceItem(name),
         _initialValue(preferences.getString(name)),
-        _editor(new QLineEdit)
+        _editor(new QLineEdit(treeWidget()))
       {
+      setObjectName("StringPreferenceItem");
       _editor->setText(_initialValue);
       }
 
@@ -565,7 +551,7 @@ void StringPreferenceItem::setDefaultValue()
       _editor->setText(preferences.defaultValue(name()).toString());
       }
 
-const bool StringPreferenceItem::isModified() const
+bool StringPreferenceItem::isModified() const
       {
       return (_initialValue != _editor->text());
       }
@@ -577,9 +563,11 @@ const bool StringPreferenceItem::isModified() const
 FilePreferenceItem::FilePreferenceItem(const QString& name)
       : PreferenceItem(name),
         _initialValue(preferences.getString(name)),
-        _editor(new QPushButton)
+        _editor(new QPushButton(treeWidget()))
       {
+      setObjectName("FilePreferenceItem");
       _editor->setText(_initialValue);
+      _editor->setCursor(Qt::PointingHandCursor);
       _editor->setToolTip(tr("Click to choose a new file..."));
       if (_initialValue.isEmpty())
             _editor->setText(tr("No file selected"));
@@ -604,14 +592,14 @@ void FilePreferenceItem::setDefaultValue()
       _editor->setText(preferences.defaultValue(name()).toString());
       }
 
-const bool FilePreferenceItem::isModified() const
+bool FilePreferenceItem::isModified() const
       {
       return (_initialValue != _editor->text());
       }
 
 void FilePreferenceItem::getFile() const
       {
-      QString fileName = QFileDialog::getOpenFileName(
+      QString fileName = QFileDialog::getOpenFileName (
                                treeWidget(),
                                tr("Choose file"),
                                QFile(_editor->text()).exists()
@@ -635,9 +623,11 @@ void FilePreferenceItem::getFile() const
 DirPreferenceItem::DirPreferenceItem(const QString& name)
       : PreferenceItem(name),
         _initialValue(preferences.getString(name)),
-        _editor(new QPushButton)
+        _editor(new QPushButton(treeWidget()))
       {
+      setObjectName("DirPreferenceItem");
       _editor->setText(_initialValue);
+      _editor->setCursor(Qt::PointingHandCursor);
       _editor->setToolTip(tr("Click to choose a new directory..."));
       if (_initialValue.isEmpty())
             _editor->setText(tr("No directory selected"));

@@ -23,11 +23,13 @@
 
 /*
  * HOW TO ADD A NEW PREFERENCE
- * - Add a new define to the list of defines below
+ * - Add a new define to the list of defines below (since the #defines define char[],
+ *   don't go camelCase in there, it facilitates the translations)
  * - Add the preference to the _allPreferences map in the init() function in preferences.cpp
- *   and specify the default value for this preference
- * - That's it. The preference is stored and retrieved automatically and can be read
- *   using getString(), getInt(), etc., and changed using setPreference()
+ * - Specify the default value for this preference.
+ * - Specify if the preference will go in the advanced list.
+ * That's it. The preference is stored and retrieved automatically and can be read
+ * using getString(), getInt(), etc., and changed using setPreference()
  */
 
 #include "globals.h"
@@ -253,7 +255,7 @@ class ColorPreference: public Preference {
       };
 
 // Support for EnumPreference is currently not fully implemented
-#define PREF_NO_SUPPORT_FOR_ENUM
+#define PREF_NO_SUPPORT_FOR_ENUMS
 class EnumPreference: public Preference {
    public:
       EnumPreference(QVariant defaultValue, bool showInAdvancedList = true);

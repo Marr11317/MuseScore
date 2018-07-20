@@ -58,7 +58,7 @@ void ColorLabel::setColor(const QColor& c)
 //   color
 //---------------------------------------------------------
 
-QColor ColorLabel::color() const
+const QColor ColorLabel::color() const
       {
       return _color;
       }
@@ -97,7 +97,7 @@ QPixmap* ColorLabel::pixmap() const
 //   text
 //---------------------------------------------------------
 
-QString ColorLabel::text() const
+const QString& ColorLabel::text() const
       {
       return _text;
       }

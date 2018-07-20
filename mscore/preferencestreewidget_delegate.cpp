@@ -21,7 +21,8 @@
 
 namespace Ms {
 
-PreferencesTreeWidget_Delegate::PreferencesTreeWidget_Delegate()
+PreferencesTreeWidget_Delegate::PreferencesTreeWidget_Delegate(QObject* parent)
+      : QItemDelegate(parent)
       {
       setObjectName("PreferencesTreeWidget_Delegate");
       }

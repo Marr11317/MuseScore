@@ -32,23 +32,18 @@ class AdvancedPreferencesWidget : public QWidget
       explicit AdvancedPreferencesWidget(QWidget* parent = nullptr);
       ~AdvancedPreferencesWidget();
 
-      inline const std::vector<const QString&> save();
+      inline void save() { ui->treePreferencesWidget->save(); }
       inline void updatePreferences() const;
 
-      inline void importModifications(const QHash<const QString, const QVariant>* changedPreferences) const;
-      inline const QHash<const QString, const QVariant>* exportModifications() const;
+      inline void retranslate() { ui->retranslateUi(this); ui->treePreferencesWidget->reload(); }
 
-private:
+   private:
       Ui::AdvancedPreferencesWidget* ui;
-
-      void readSettings();
-      void writeSettings();
 
    private slots:
       void enableResetPreferenceToDefault();
-
 };
 
-} // Ms
+} // namespace Ms
 
 #endif // ADVANCEDPREFERENCESWIDGET_H

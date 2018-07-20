@@ -41,23 +41,23 @@ class ColorLabel : public QFrame {
       virtual void mousePressEvent(QMouseEvent*) override;
 
    signals:
-      void colorChanged(QColor&);
+      void colorChanged(const QColor&);
       void pixmapChanged(const QPixmap*);
       void textChanged(const QString&);
 
    public:
-      ColorLabel(QWidget* parent = 0);
+      ColorLabel(QWidget* parent = nullptr);
       ~ColorLabel();
 
       void setColor(const QColor&);
-      QColor color() const;
+      const QColor color() const;
 
       virtual QSize sizeHint() const override;
 
       QPixmap* pixmap() const;
       void setPixmap(QPixmap*);
 
-      QString text() const;
+      const QString& text() const;
       void setText(const QString& text);
 };
 

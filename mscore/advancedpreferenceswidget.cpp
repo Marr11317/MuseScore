@@ -29,26 +29,15 @@ AdvancedPreferencesWidget::AdvancedPreferencesWidget(QWidget* parent) :
       ui(new Ui::AdvancedPreferencesWidget)
       {
       setObjectName("AdvancedPreferencesWidget");
-
       ui->setupUi(this);
-      readSettings();
-      ui->treePreferencesWidget->showAll(ui->showAllCheckBox->isChecked());
 
-      auto filterWShowAll = [&]()
-            {
-            ui->treePreferencesWidget->filterVisiblePreferences(ui->searchLineEdit->text(), ui->showAllCheckBox->isChecked());
-            };
-
-      connect(ui->resetToDefaultButton, &QPushButton::clicked, ui->treePreferencesWidget, &PreferencesListWidget::resetAdvancedPreferenceToDefault);
+      connect(ui->resetToDefaultButton, &QPushButton::clicked, ui->treePreferencesWidget, &PreferencesListWidget::resetSelectedPreferencesToDefault);
       connect(ui->treePreferencesWidget, &QTreeWidget::itemSelectionChanged, this, &AdvancedPreferencesWidget::enableResetPreferenceToDefault);
-      connect(ui->searchLineEdit,  &QLineEdit::textChanged, this, filterWShowAll);
-      connect(ui->showAllCheckBox, &QCheckBox::toggled,     this, filterWShowAll);
-
+      connect(ui->searchLineEdit,  &QLineEdit::textChanged, ui->treePreferencesWidget, &PreferencesListWidget::filter);
       }
 
 AdvancedPreferencesWidget::~AdvancedPreferencesWidget()
       {
-      writeSettings();
       delete ui;
       }
 
@@ -57,50 +46,28 @@ void AdvancedPreferencesWidget::updatePreferences() const
       ui->treePreferencesWidget->updatePreferences();
       }
 
-const std::vector<const QString&> AdvancedPreferencesWidget::save()
-      {
-      return ui->treePreferencesWidget->save();
-      }
-
-void AdvancedPreferencesWidget::importModifications(const QHash<const QString, const QVariant>* changedPreferences)
-      {
-      ui->treePreferencesWidget->importModifications(changedPreferences);
-      }
-
-const QHash<const QString, const QVariant>* AdvancedPreferencesWidget::exportModifications() const
-      {
-      return ui->treePreferencesWidget->exportModifications();
-      }
-
 void AdvancedPreferencesWidget::enableResetPreferenceToDefault()
       {
+      if (!ui->treePreferencesWidget->selectedItems().count()) {
+            setEnabled(false);
+            return;
+            }
+
+      // if at least one of the selected items is a PreferenceItem, enable resetToDefaultButton.
       for (QTreeWidgetItem* item: ui->treePreferencesWidget->selectedItems()) {
-            if (item->childCount()) { // the item has children and so can't be a PreferenceItem.
-                  ui->resetToDefaultButton->setEnabled(false);
+            // it would be faster, but less safe to use (item->childCount()
+            // to determine if the item is a PreferenceItem.
+            PreferenceItem* pref = dynamic_cast<PreferenceItem*>(item);
+            if (pref) {
+                  ui->resetToDefaultButton->setEnabled(true);
                   return;
                   }
             }
-      // if all selected items are PreferenceItems, then enable resetToDefaultButton.
-      ui->resetToDefaultButton->setEnabled(ui->treePreferencesWidget->selectedItems().count());
+      // if it gets here, it means none of the selected items were PreferenceItems, so disable the button.
+      ui->resetToDefaultButton->setEnabled(false);
       }
 
-void AdvancedPreferencesWidget::writeSettings()
-      {
-      QSettings settings;
-      settings.beginGroup(objectName());
-      settings.setValue("showAll", ui->showAllCheckBox->isChecked());
-      settings.endGroup();
-      }
 
-void AdvancedPreferencesWidget::readSettings()
-      {
-      if (!useFactorySettings) {
-            QSettings settings;
-            settings.beginGroup(objectName());
-            ui->showAllCheckBox->setChecked(settings.value("showAll", false).toBool());
-            settings.endGroup();
-            }
-      }
 
-} // Ms
+} // namespace Ms
 

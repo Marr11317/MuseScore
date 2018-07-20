@@ -77,14 +77,10 @@ class PreferenceDialog : public AbstractDialog, private Ui::PrefsDialogBase {
       void selectImagesDirectory();
       void selectExtensionsDirectory();
       void printShortcutsClicked();
-      void filterShortcutsTextChanged(const QString &);
+      void filterShortcutsTextChanged(const QString&);
 
       void changeSoundfontPaths();
       void updateTranslationClicked();
-
-      void importChangesFromAdvanced();
-      inline void exportChangesToAdvanced();
-      QHash<QString, Preference*> diffPrefsWithAdvanced();
 
    signals:
       void preferencesChanged();

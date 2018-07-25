@@ -72,13 +72,12 @@ void Preferences::init(bool storeInMemoryOnly)
 
       // The following define is needed in order to translate the advanced preferences.
       // These translations are accessible via qApp->translate("MusEScore", #WantedDefine)
-
+#define TR_PREF(s) QString(QT_TRANSLATE_NOOP3("MusEScore", s, "Do not change where the slashes ('/') are. Translate what's in between.")).toLatin1()
       // Some of these translations won't be used for now, since
       //  1) enums are still not supported in the advanced tab, and
       //  2) there is still no option to show all preferences in the advanced tab.
       // And the advancedTab is (for now) the only place these translations are used.
 
-#define TR_PREF(s) QT_TRANSLATE_NOOP3("MusEScore", s, "Do not change where the slashes ('/') are. Translate what's in between.").toLatin1()
       _allPreferences = prefs_map_t(
       {
             {TR_PREF(PREF_APP_AUTOSAVE_AUTOSAVETIME),                       new IntPreference(2 /* minutes */, false)},

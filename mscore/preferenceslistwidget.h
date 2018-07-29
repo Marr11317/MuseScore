@@ -73,7 +73,7 @@ class BoolPreferenceItem : public PreferenceItem {
 
       QWidget* editor() const override { return _editor; }
       inline virtual void save() override;
-      inline virtual void update(const QString name = name()) override;
+      inline virtual void update(const QString name = "") override;
       inline virtual void setDefaultValue() override;
       inline virtual bool isModified() const override;
       };
@@ -90,7 +90,7 @@ class IntPreferenceItem : public PreferenceItem {
 
       QWidget* editor() const override { return _editor; }
       inline virtual void save() override;
-      inline virtual void update(const QString name = name()) override;
+      inline virtual void update(const QString name = "") override;
       inline virtual void setDefaultValue() override;
       inline virtual bool isModified() const override;
       };
@@ -107,7 +107,7 @@ class DoublePreferenceItem : public PreferenceItem {
 
       QWidget* editor() const override { return _editor; }
       inline virtual void save() override;
-      inline virtual void update(const QString name = name()) override;
+      inline virtual void update(const QString name = "") override;
       inline virtual void setDefaultValue() override;
       inline virtual bool isModified() const override;
       };
@@ -124,7 +124,7 @@ class StringPreferenceItem : public PreferenceItem {
 
       QWidget* editor() const override { return _editor; }
       inline virtual void save() override;
-      inline virtual void update(const QString name = name()) override;
+      inline virtual void update(const QString name = "") override;
       inline virtual void setDefaultValue() override;
       inline virtual bool isModified() const override;
       };
@@ -141,7 +141,7 @@ class FilePreferenceItem : public PreferenceItem {
 
       QWidget* editor() const override { return _editor; }
       inline virtual void save() override;
-      inline virtual void update(const QString name = name()) override;
+      inline virtual void update(const QString name = "") override;
       inline virtual void setDefaultValue() override;
       inline virtual bool isModified() const override;
 
@@ -161,7 +161,7 @@ class DirPreferenceItem : public PreferenceItem {
 
       QWidget* editor() const override { return _editor; }
       inline virtual void save() override;
-      inline virtual void update(const QString name = name()) override;
+      inline virtual void update(const QString name = "") override;
 
       inline virtual void setDefaultValue() override;
       inline virtual bool isModified() const override;
@@ -182,7 +182,7 @@ class ColorPreferenceItem : public PreferenceItem {
 
       QWidget* editor() const override { return _editor; }
       inline virtual void save() override;
-      inline virtual void update(const QString name = name()) override;
+      inline virtual void update(const QString name = "") override;
 
       inline virtual void setDefaultValue() override;
       inline virtual bool isModified() const override;

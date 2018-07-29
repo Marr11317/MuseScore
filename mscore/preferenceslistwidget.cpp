@@ -380,7 +380,7 @@ void ColorPreferenceItem::save()
 
 void ColorPreferenceItem::update(const QString& name)
       {
-      QColor newValue = preferences.getColor(name());
+      QColor newValue = preferences.getColor(name.isEmpty() ? name : name());
       _editor->setColor(newValue);
       }
 
@@ -419,7 +419,7 @@ void IntPreferenceItem::save()
 
 void IntPreferenceItem::update(const QString& name)
       {
-      int newValue = preferences.getInt(name());
+      QColor newValue = preferences.getInt(name.isEmpty() ? name : name());
       _editor->setValue(newValue);
       }
 
@@ -459,7 +459,7 @@ void DoublePreferenceItem::save()
 
 void DoublePreferenceItem::update(const QString& name)
       {
-      double newValue = preferences.getDouble(name());
+      QColor newValue = preferences.getDouble(name.isEmpty() ? name : name());
       _editor->setValue(newValue);
       }
 

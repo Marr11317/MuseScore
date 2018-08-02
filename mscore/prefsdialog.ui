@@ -914,7 +914,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="Awl::ColorLabel" name="bgColorLabel">
+           <widget class="Awl::ColorLabe" name="bgColorLabel">
             <property name="focusPolicy">
              <enum>Qt::StrongFocus</enum>
             </property>
@@ -1032,7 +1032,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="Awl::ColorLabel" name="fgColorLabel">
+           <widget class="Awl::ColorLabe" name="fgColorLabel">
             <property name="focusPolicy">
              <enum>Qt::StrongFocus</enum>
             </property>
@@ -4226,7 +4226,7 @@ Adjusting latency can help synchronize your MIDI hardware with MuseScore's inter
  <pixmapfunction>getPixmap</pixmapfunction>
  <customwidgets>
   <customwidget>
-   <class>Awl::ColorLabel</class>
+   <class>Awl::ColorLabe</class>
    <extends>QFrame</extends>
    <header>awl/colorlabel.h</header>
    <container>1</container>

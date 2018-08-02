@@ -21,44 +21,40 @@
 #ifndef __AWLCOLORLABEL_H__
 #define __AWLCOLORLABEL_H__
 
+#include <QtWidgets>
+
 namespace Awl {
 
 //---------------------------------------------------------
 //   ColorLabel
 //---------------------------------------------------------
 
-class ColorLabel : public QFrame {
+class ColorLabel : public QPushButton {
       Q_OBJECT
       Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
-      Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged)
       Q_PROPERTY(QPixmap* pixmap READ pixmap WRITE setPixmap NOTIFY pixmapChanged)
 
       QColor _color;
-      QString _text;
       QPixmap* _pixmap;
 
       virtual void paintEvent(QPaintEvent*) override;
-      virtual void mousePressEvent(QMouseEvent*) override;
-      virtual void keyPressEvent(QKeyEvent*) override;
 
    signals:
       void colorChanged(const QColor&);
       void pixmapChanged(const QPixmap*);
-      void textChanged(const QString&);
 
    public:
       ColorLabel(QWidget* parent = nullptr);
       ~ColorLabel();
 
-      virtual QSize sizeHint() const override;
       const QColor color() const;
       QPixmap* pixmap() const;
-      const QString& text() const;
 
    public slots:
-      void setText(const QString& text);
       void setPixmap(QPixmap*);
       void setColor(const QColor&);
+
+      // starts the colordialog.
       void getColor();
 
 };

@@ -4165,8 +4165,8 @@ QString Shortcut::keySeqToString(const QKeySequence& keySeq, QKeySequence::Seque
       {
       QString s;
       for (int i = 0; i < KEYSEQ_SIZE; ++i) {
-            int code;
-            if ( (code = keySeq[i]) == 0)
+            int code = keySeq[i];
+            if (!code)
                   break;
             if (i)
                   s += ",";

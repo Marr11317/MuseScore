@@ -338,7 +338,7 @@ void PluginManager::definePluginShortcutClicked()
       if (rv == 2)            // replace
             s->clear();
 
-      s->addShortcut(sc.getKey());
+      s->addShortcut(sc.getKeySequence());
       QAction* action = s->action();
       action->setShortcuts(s->keys());
       mscore->addAction(action);

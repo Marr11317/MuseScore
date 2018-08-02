@@ -1350,7 +1350,7 @@ void PreferenceDialog::defineShortcutClicked()
             return;
       if (rv == 2)
             s->clear();
-      s->addShortcut(sc.getKey());
+      s->addShortcut(sc.getKeySequence());
       active->setText(1, s->keysToString());
       shortcutsChanged = true;
       }

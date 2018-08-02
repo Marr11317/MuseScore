@@ -40,22 +40,24 @@ class ShortcutCaptureDialog : public QDialog, public Ui::ShortcutCaptureDialogBa
       {
       Q_OBJECT
 
-      Shortcut* s;
-      void keyPress(QKeyEvent* e);
+      Shortcut* _shortcut;
+      void keyPress(QKeyEvent*);
       virtual bool eventFilter(QObject* o, QEvent* e);
-      QKeySequence key;
+      QKeySequence _keySequence;
       QMap<QString, Shortcut*> localShortcuts;
 
       virtual void hideEvent(QHideEvent*);
+
     private slots:
       void clearClicked();
       void addClicked();
       void replaceClicked();
 
     public:
-      ShortcutCaptureDialog(Shortcut* s, QMap<QString, Shortcut*> localShortcuts, QWidget* parent = 0);
+      ShortcutCaptureDialog(Shortcut* shortcut, QMap<QString, Shortcut*> localShortcuts, QWidget* parent = nullptr);
       ~ShortcutCaptureDialog();
-      QKeySequence getKey() const { return key; }
+      QKeySequence getKeySequence() const { return _keySequence; }
+      bool checkForConflicts();
       };
 
 } // namespace Ms

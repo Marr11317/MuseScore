@@ -10,11 +10,14 @@
 //  the file LICENSE.GPL
 //=============================================================================
 
+#include "inspector.h"
 #include "inspectorMeasureNumber.h"
+#include "libmscore/measurenumber.h"
 #include "libmscore/score.h"
-#include "icons.h"
 
 namespace Ms {
+
+extern void populateSystemRelativePlacement(QComboBox*);
 
 //---------------------------------------------------------
 //   InspectorMeasureNumber
@@ -23,14 +26,19 @@ namespace Ms {
 InspectorMeasureNumber::InspectorMeasureNumber(QWidget* parent)
    : InspectorTextBase(parent)
       {
+      mn.setupUi(addWidget());
+
       const std::vector<InspectorItem> iiList = {
+            { Pid::SUB_STYLE, 0, mn.style,     mn.resetStyle },
+            { Pid::PLACEMENT, 0, mn.placement, mn.resetPlacement  }
             };
       const std::vector<InspectorPanel> ppList = {
-            { t.title, t.panel },
+            { mn.title, mn.panel },
             };
 
+      populateStyle(mn.style);
+      populateSystemRelativePlacement(mn.placement);
       mapSignals(iiList, ppList);
       }
 
-}
-
+} // namespace Ms

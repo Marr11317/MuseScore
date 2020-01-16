@@ -266,7 +266,9 @@ class Measure final : public MeasureBase {
       void checkTrailer();
       void setStretchedWidth(qreal);
       void layoutStaffLines();
-      };
+      void lastVisibleStaff(int nn);
+      void firstVisibleStaff(int nn);
+};
 
 }     // namespace Ms
 #endif

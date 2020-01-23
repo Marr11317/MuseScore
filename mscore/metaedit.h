@@ -42,12 +42,15 @@ class MetaEditDialog : public QDialog, public Ui::MetaEditDialog {
    private slots:
       void newClicked();
       void setDirty() { dirty = true; }
+      void openCurrentFileLocation();
 
    public slots:
       virtual void accept();
 
    public:
       MetaEditDialog(Score*, QWidget* parent = 0);
+      
+      static void openFileLocation(const QString& path, QWidget* parent);
       };
 
 

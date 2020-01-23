@@ -83,8 +83,11 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="1" colspan="5">
+     <item row="0" column="1" colspan="4">
       <widget class="QLabel" name="filePath"/>
+     </item>
+     <item row="0" column="5">
+      <widget class="QToolButton" name="revealButton"/>
      </item>
     </layout>
    </item>
@@ -98,8 +101,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>646</width>
-        <height>238</height>
+        <width>648</width>
+        <height>263</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout">

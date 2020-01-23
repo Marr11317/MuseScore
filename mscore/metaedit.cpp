@@ -21,6 +21,7 @@
 #include "libmscore/score.h"
 #include "libmscore/undo.h"
 #include "musescore.h"
+#include "icons.h"
 
 namespace Ms {
 
@@ -60,6 +61,15 @@ MetaEditDialog::MetaEditDialog(Score* s, QWidget* parent)
             grid->addWidget(text, idx, 1);
             ++idx;
             }
+      revealButton->setIcon(*icons[int(Icons::fileOpen_ICON)]);
+#if defined(Q_OS_WIN)
+      revealButton->setToolTip("Show in Explorer");
+#elif defined(Q_OS_MAC)
+      revealButton->setToolTip("Reveal in Finder");
+#else
+      revealButton->setToolTip("Open file location");
+#endif
+      connect(revealButton, SIGNAL(clicked()), SLOT(openCurrentFileLocation()));
       connect(newButton, SIGNAL(clicked()), SLOT(newClicked()));
       MuseScore::restoreGeometry(this);
       }
@@ -120,5 +130,44 @@ void MetaEditDialog::hideEvent(QHideEvent* event)
       QWidget::hideEvent(event);
       }
 
-}
+//---------------------------------------------------------
+//   openFileLocation
+//---------------------------------------------------------
 
+void MetaEditDialog::openFileLocation(const QString& path, QWidget* parent)
+      {
+      const QFileInfo fileInfo(path);
+      QStringList args;
+#if defined(Q_OS_WIN)
+      QStringList param;
+      if (!fileInfo.isDir())
+            param += QLatin1String("/select,");
+      param += QDir::toNativeSeparators(fileInfo.canonicalFilePath());
+      if(QProcess::startDetached("explorer.exe", param))
+            return;
+#elif defined(Q_OS_MAC)
+      QStringList scriptArgs;
+      scriptArgs << QLatin1String("-e")
+             << QString::fromLatin1("tell application \"Finder\" to reveal POSIX file \"%1\"")
+                                   .arg(fileInfo.canonicalFilePath());
+      QProcess::execute(QLatin1String("/usr/bin/osascript"), scriptArgs);
+      scriptArgs.clear();
+      scriptArgs << QLatin1String("-e")
+             << QLatin1String("tell application \"Finder\" to activate");
+      if (!QProcess::execute("/usr/bin/osascript", scriptArgs))
+            return;
+#endif // not #else so that the following line can be used as a fallback.
+      if (!QDesktopServices::openUrl(QUrl::fromLocalFile(fileInfo.isDir()? path : fileInfo.path())))
+            QMessageBox::warning(parent, QString(QT_TR_NOOP("Open File Location Error")),
+                                         QString(QT_TR_NOOP("Could not open file location")));
+      }
+
+//---------------------------------------------------------
+//   openCurrentFileLocation
+//---------------------------------------------------------
+
+void MetaEditDialog::openCurrentFileLocation()
+      {
+      openFileLocation(filePath->text(), this);
+      }
+} // namespace Ms

@@ -61,7 +61,7 @@ MetaEditDialog::MetaEditDialog(Score* s, QWidget* parent)
             grid->addWidget(text, idx, 1);
             ++idx;
             }
-      revealButton->setIcon(*icons[int(Icons::fileOpen_ICON)]);
+      revealButton->setIcon(*icons[int(Icons::fileOpenLocation_ICON)]);
 #if defined(Q_OS_WIN)
       revealButton->setToolTip("Show in Explorer");
 #elif defined(Q_OS_MAC)

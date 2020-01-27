@@ -34,7 +34,7 @@ enum class Icons : signed char { Invalid_ICON = -1,
       midiin_ICON, speaker_ICON, start_ICON, play_ICON, repeat_ICON, pan_ICON,
       sbeam_ICON, mbeam_ICON, nbeam_ICON, beam32_ICON, beam64_ICON, abeam_ICON, fbeam1_ICON, fbeam2_ICON,
       file_ICON, fileOpen_ICON, fileNew_ICON, fileSave_ICON, fileSaveAs_ICON,
-      fileSaveOnline_ICON,
+      fileSaveOnline_ICON, fileOpenLocation_ICON,
       window_ICON, acciaccatura_ICON, appoggiatura_ICON,
       grace4_ICON, grace16_ICON, grace32_ICON,
       grace8after_ICON, grace16after_ICON, grace32after_ICON,
@@ -61,8 +61,7 @@ enum class Icons : signed char { Invalid_ICON = -1,
       mail_ICON, bug_ICON,
       noteTimewise_ICON,
       arrowsMoveToTop_ICON,
-      voice1_ICON, voice2_ICON, voice3_ICON, voice4_ICON,
-      ICONS
+      voice1_ICON, voice2_ICON, voice3_ICON, voice4_ICON // voice4_ICON needs to stay last
       };
 
 extern QIcon* icons[];

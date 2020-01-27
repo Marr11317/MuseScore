@@ -29,7 +29,7 @@
 namespace Ms {
 
 extern QString iconPath;
-QIcon* icons[int(Icons::ICONS)];
+QIcon* icons[int(Icons::voice4_ICON)]; // last icon
 
 //---------------------------------------------------------
 //   genIcons
@@ -86,6 +86,7 @@ static const char* iconNames[] = {
       "document-save.svg",
       "document-save-as.svg",
       "document-save-online.svg",
+      "document-open-location.svg",
       "mscore.png",
       "acciaccatura.svg",
       "appoggiatura.svg",

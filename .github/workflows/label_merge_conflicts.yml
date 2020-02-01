@@ -2,11 +2,16 @@ on:
   push:
     branches:
       - master
+      - conflictdetectertest
+  pull_request:
+    types: [opened, synchronize, reopened]
+
 jobs:
   triage:
     runs-on: ubuntu-latest
     steps:
-      - uses: mschilde/auto-label-merge-conflicts@master
+      - uses: Marr11317/ConflictAdviser@v1
         with:
-          CONFLICT_LABEL_NAME: "Merge conflicts"
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          conflict_label: "merge conflicts"
+          comment: 'Rebase needed'

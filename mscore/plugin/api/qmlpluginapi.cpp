@@ -80,6 +80,9 @@ void PluginAPI::initEnums() {
       PluginAPI::noteValueTypeEnum = wrapEnum<Ms::Note::ValueType>();
       PluginAPI::segmentTypeEnum = wrapEnum<Ms::SegmentType>();
       PluginAPI::spannerAnchorEnum = wrapEnum<Ms::Spanner::Anchor>();
+      PluginAPI::TransposeMode = wrapEnum<Ms::TransposeMode>();
+      PluginAPI::TransposeDirection = wrapEnum<Ms::TransposeDirection>();
+      PluginAPI::Key = wrapEnum<Ms::Key>();
 
       initialized = true;
       }

@@ -324,6 +324,53 @@ enum class OffsetType : char {
       SPATIUM    ///< offset in staff space units
       };
 
+//---------------------------------------------------------
+//   TransposeDirection
+//---------------------------------------------------------
+
+enum class TransposeDirection : char {
+      UP,         ///< transpose up
+      DOWN,       ///< transpose down
+      CLOSEST     ///< transpose to closest
+      };
+
+//---------------------------------------------------------
+//   TransposeMode
+//---------------------------------------------------------
+
+enum class TransposeMode : char {
+      BY_KEY,           ///< transpose by key
+      BY_INTERVAL,      ///< transpose by interval
+      DIATONICALLY      ///< transpose diatonically
+      };
+
+//---------------------------------------------------------
+//   Key
+//---------------------------------------------------------
+
+enum class Key {
+      C_B = -7,               ///< C flat
+      G_B,                    ///< G flat
+      D_B,                    ///< D flat
+      A_B,                    ///< A flat
+      E_B,                    ///< E flat
+      B_B,                    ///< B flat
+      F,                      ///< F
+      C,    // == 0
+      G,
+      D,
+      A,
+      E,
+      B,
+      F_S,
+      C_S,
+      MIN     = Key::C_B,
+      MAX     = Key::C_S,
+      INVALID = Key::MIN - 1,
+      NUM_OF  = Key::MAX - Key::MIN + 1,
+      DELTA_ENHARMONIC = 12
+      };
+
 //-------------------------------------------------------------------
 //   SegmentType
 //
@@ -512,6 +559,9 @@ Q_ENUM_NS(Align);
 Q_ENUM_NS(NoteType);
 Q_ENUM_NS(PlayEventType);
 Q_ENUM_NS(AccidentalType);
+Q_ENUM_NS(TransposeDirection);
+Q_ENUM_NS(TransposeMode);
+Q_ENUM_NS(Key);
 #endif
 
 //hack: to force the build system to run moc on this file

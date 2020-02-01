@@ -150,6 +150,17 @@ class PluginAPI : public Ms::QmlPlugin {
       DECLARE_API_ENUM( Segment,          segmentTypeEnum         )
       DECLARE_API_ENUM( Spanner,          spannerAnchorEnum       ) // probably unavailable in 2.X
 
+      /// Contains Ms::TransposeMode enumeration values.
+      /// \since MuseScore 3.5
+      ///
+      DECLARE_API_ENUM( TransposeMode,    TransposeModeEnum)
+      /// Contains Ms::TransposeDirection enumeration values.
+      /// \since MuseScore 3.5
+      DECLARE_API_ENUM( TransposeDirection, TransposeDirectionEnum)
+      /// Contains Ms::TransposeDirection enumeration values.
+      /// \since MuseScore 3.5
+      DECLARE_API_ENUM( Key,              KeyEnum)
+
       QFile logFile;
 
       static void initEnums();

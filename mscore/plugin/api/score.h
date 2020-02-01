@@ -134,6 +134,8 @@ class Score : public Ms::PluginAPI::ScoreElement {
       void setName(const QString& name) { score()->masterScore()->setName(name); }
       /// \endcond
 
+      Q_INVOKABLE bool transpose(TransposeMode mode, TransposeDirection direction, Key key, int interval,
+                                 bool trKeys, bool transposeChordNames, bool useDoubleSharpsFlats);
       Q_INVOKABLE QString extractLyrics() { return score()->extractLyrics(); }
 
 //      //@ ??

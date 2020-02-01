@@ -13,6 +13,8 @@
 #ifndef __KEY__H__
 #define __KEY__H__
 
+#include "types.h"
+
 namespace Ms {
 
 class XmlWriter;
@@ -20,33 +22,6 @@ class Score;
 class XmlReader;
 enum class AccidentalVal : signed char;
 enum class ClefType : signed char;
-
-//---------------------------------------------------------
-//   Key
-//---------------------------------------------------------
-
-enum class Key {
-      C_B = -7,
-      G_B,
-      D_B,
-      A_B,
-      E_B,
-      B_B,
-      F,
-      C,    // == 0
-      G,
-      D,
-      A,
-      E,
-      B,
-      F_S,
-      C_S,
-      MIN     = Key::C_B,
-      MAX     = Key::C_S,
-      INVALID = Key::MIN - 1,
-      NUM_OF  = Key::MAX - Key::MIN + 1,
-      DELTA_ENHARMONIC = 12
-      };
 
 //---------------------------------------------------------
 //   KeyMode

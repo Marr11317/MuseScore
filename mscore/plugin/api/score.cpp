@@ -122,6 +122,24 @@ Measure* Score::lastMeasureMM()
       }
 
 //---------------------------------------------------------
+//   Score::transpose
+///   \brief Transposes the score
+///   \param mode
+///   - "title"
+///   - "subtitle"
+///   - "composer"
+///   - "lyricist"
+///   - Any other value corresponds to default text style.
+///   \param txt Text to be added.
+//---------------------------------------------------------
+
+bool Score::transpose(TransposeMode mode, TransposeDirection direction, Key key, int interval,
+                      bool trKeys, bool transposeChordNames, bool useDoubleSharpsFlats)
+      {
+      return score()->transpose(mode, direction, key, interval, trKeys, transposeChordNames, useDoubleSharpsFlats);
+      }
+
+//---------------------------------------------------------
 //   Score::startCmd
 //---------------------------------------------------------
 
@@ -140,5 +158,5 @@ void Score::startCmd()
             score()->startCmd();
             }
       }
-}
-}
+} // namespace PluginAPI
+} // namespace Ms

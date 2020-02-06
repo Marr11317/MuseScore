@@ -77,6 +77,7 @@
 #include "scorecmp/scorecmp.h"
 #include "extension.h"
 #include "tourhandler.h"
+#include "plugin/qmlpluginengine.h"
 
 #ifdef OMR
 #include "omr/omr.h"
@@ -462,6 +463,10 @@ bool MuseScore::saveFile(MasterScore* score)
             score->setTmpName("");
             }
       writeSessionFile(false);
+
+      // Operation was succesful -> Send event to plugins
+      getPluginEngine()->sendScoreSaved(score, score->fileInfo()->suffix());
+
       return true;
       }
 
@@ -2021,6 +2026,10 @@ bool MuseScore::saveAs(Score* cs_, bool saveCopy, const QString& path, const QSt
             cs_->setLayoutMode(layoutMode);
             cs_->doLayout();
             }
+
+      if (rv) // Send event to plugins only if succesful
+            getPluginEngine()->sendScoreSaved(cs_, ext);
+
       return rv;
       }
 

@@ -28,13 +28,46 @@ namespace Ms {
 
 void MuseScore::showNavigator(bool visible)
       {
-      Navigator* n = static_cast<Navigator*>(_navigator->widget());
-      if (n == 0 && visible) {
+      Navigator* n = _navigator->navigatorWidget();
+
+      QAction* act = getAction("toggle-navigator");
+      if (!n) {
             n = new Navigator(_navigator, this);
             n->setScoreView(cv);
+            connect(_timeline, SIGNAL(visibilityChanged(bool)), act, SLOT(setChecked(bool)));
+            connect(_timeline, SIGNAL(closed(bool)), act, SLOT(setChecked(bool)));
             }
+      reDisplayDockWidget(_timeline, visible);
+
       _navigator->setVisible(visible);
-      getAction("toggle-navigator")->setChecked(visible);
+      act->setChecked(visible);
+      }
+
+//---------------------------------------------------------
+//   NavigatorDockWidget
+//---------------------------------------------------------
+
+NavigatorDockWidget::NavigatorDockWidget(QWidget* parent)
+   : QDockWidget(parent)
+      {
+      setObjectName("Navigator");
+      setWindowTitle(QT_TRANSLATE_NOOP("action", "Navigator"));
+
+      _scrollArea = new NScrollArea(this);
+      setFocusPolicy(Qt::NoFocus);
+      setWidget(_scrollArea);
+      setAllowedAreas(Qt::DockWidgetAreas(Qt::TopDockWidgetArea | Qt::BottomDockWidgetArea));
+      setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+      }
+
+//---------------------------------------------------------
+//   closeEvent
+//---------------------------------------------------------
+
+void NavigatorDockWidget::closeEvent(QCloseEvent* event)
+      {
+      emit closed(false);
+      QWidget::closeEvent(event);
       }
 
 //---------------------------------------------------------
@@ -391,5 +424,6 @@ void Navigator::paintEvent(QPaintEvent* ev)
             i++;
             }
       }
-}
+
+} // namespace Ms
 

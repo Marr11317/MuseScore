@@ -54,12 +54,12 @@ void MuseScore::showTimeline(bool visible)
             time = new Timeline(_timeline);
             time->setScore(0);
             time->setScoreView(cv);
+            connect(_timeline, SIGNAL(visibilityChanged(bool)), act, SLOT(setChecked(bool)));
+            connect(_timeline, SIGNAL(closed(bool)), act, SLOT(setChecked(bool)));
             }
-      connect(_timeline, SIGNAL(visibilityChanged(bool)), act, SLOT(setChecked(bool)));
-      connect(_timeline, SIGNAL(closed(bool)), act, SLOT(setChecked(bool)));
       reDisplayDockWidget(_timeline, visible);
 
-      getAction("toggle-timeline")->setChecked(visible);
+      act->setChecked(visible);
       if (visible)
             TourHandler::startTour("timeline-tour");
       }

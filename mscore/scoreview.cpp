@@ -4517,8 +4517,8 @@ void ScoreView::gotoMeasure(Measure* measure)
 
 void ScoreView::layoutChanged()
       {
-      if (mscore->navigator())
-            mscore->navigator()->layoutChanged();
+      if (mscore->navigator()->navigatorWidget())
+            mscore->navigator()->navigatorWidget()->layoutChanged();
       _curLoopIn->move(_score->pos(POS::LEFT));
       Measure* lm = _score->lastMeasure();
       if (lm && _score->pos(POS::RIGHT) > lm->endTick())

@@ -17,6 +17,9 @@
 //  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //=============================================================================
 
+#include <QDockWidget>
+#include <QScrollArea>
+
 #ifndef __NAVIGATOR_H__
 #define __NAVIGATOR_H__
 
@@ -26,6 +29,28 @@ class Score;
 class ScoreView;
 class Page;
 class Navigator;
+class NScrollArea;
+
+//---------------------------------------------------------
+//   NavigatorDockWidget
+//    modified QScrollArea for Timeline
+//---------------------------------------------------------
+
+class NavigatorDockWidget : public NavigatorDockWidget {
+      Q_OBJECT
+
+      NScrollArea* _scrollArea;
+
+      virtual void closeEvent(QCloseEvent* event);
+
+   signals:
+      void closed(bool);
+
+   public:
+      NavigatorDockWidget(QWidget* parent = nullptr);
+      NScrollArea* scrollArea() { return _scrollArea; } // same as widget()
+      Navigator* navigatorWidget() { return _scrollArea->widget(); }
+      };
 
 //---------------------------------------------------------
 //   NScrollArea

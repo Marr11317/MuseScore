@@ -1096,9 +1096,9 @@ MuseScore::MuseScore()
       layout->setSpacing(0);
       mainScore->setLayout(layout);
 
-      _navigator = new NScrollArea;
+      _navigator = new NavigatorDockWidget;
       _navigator->setFocusPolicy(Qt::NoFocus);
-      mainWindow->addWidget(_navigator);
+      addDockWidget(Qt::BottomDockWidgetArea, _navigator);
       scorePageLayoutChanged();
       showNavigator(preferences.getBool(PREF_UI_APP_STARTUP_SHOWNAVIGATOR));
 
@@ -2638,8 +2638,8 @@ void MuseScore::setCurrentScoreView(ScoreView* view)
 #endif
       if (!cs) {
             setWindowTitle(MUSESCORE_NAME_VERSION);
-            if (_navigator && _navigator->widget()) {
-                  navigator()->setScoreView(cv);
+            if (_navigator && _navigator->navigatorWidget()) {
+                  navigator()->navigatorWidget()->setScoreView(cv);
                   }
             if (timeline()) {
                   timeline()->setScoreView(cv);
@@ -2701,8 +2701,8 @@ void MuseScore::setCurrentScoreView(ScoreView* view)
 
       setPos(cs->inputPos());
       //showMessage(cs->filePath(), 2000);
-      if (_navigator && _navigator->widget()) {
-            navigator()->setScoreView(view);
+      if (_navigator && _navigator->navigatorWidget()) {
+            navigator()->navigatorWidget()->setScoreView(view);
             }
       if (timeline()) {
             timeline()->setScore(cs);
@@ -6407,9 +6407,9 @@ void MuseScore::openExternalLink(const QString& url)
 //   navigator
 //---------------------------------------------------------
 
-Navigator* MuseScore::navigator() const
+NavigatorDockWidget* MuseScore::navigator() const
       {
-      return _navigator ? static_cast<Navigator*>(_navigator->widget()) : 0;
+      return _navigator ? _navigator : 0;
       }
 
 //---------------------------------------------------------

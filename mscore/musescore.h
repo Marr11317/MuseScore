@@ -69,7 +69,7 @@ class TextTools;
 class DrumTools;
 class KeyEditor;
 class ChordStyleEditor;
-class Navigator;
+class NavigatorDockWidget;
 class Timeline;
 class PianoTools;
 class MediaDialog;
@@ -203,7 +203,7 @@ class MuseScore : public QMainWindow, public MuseScoreCore {
       QSplitter* splitter;
       ScoreTab* tab1;
       ScoreTab* tab2;
-      NScrollArea* _navigator;
+      NavigatorDockWidget* _navigator;
       TDockWidget* _timeline;
       ImportMidiPanel* importmidiPanel     { 0 };
       QFrame* importmidiShowPanel;
@@ -751,8 +751,8 @@ class MuseScore : public QMainWindow, public MuseScoreCore {
       static Synthesizer* synthesizer(const QString& name);
 
       Q_INVOKABLE QString getLocaleISOCode() const;
-      Navigator* navigator() const;
-      NScrollArea* navigatorScrollArea() const { return _navigator; }
+      NavigatorDockWidget* navigator() const;
+      NavigatorDockWidget* navigatorScrollArea() const { return _navigator; }
       Timeline* timeline() const;
       TDockWidget* timelineScrollArea() const { return _timeline; }
       QWidget*   searchDialog() const;

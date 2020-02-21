@@ -3566,9 +3566,9 @@ void Score::cmdAddPitch(const EditData& ed, int note, bool addFlag, bool insert)
                   }
             }
       else {
-            static const int tab[] = { 0, 2, 4, 5, 7, 9, 11 };
+            static const int tab[] = { 0, 2, 4, 5, 7, 9, 11 }; // { C, D, E, F, G, A, B, C } with distance in semitones
 
-            // if adding notes, add above the upNote of the current chord
+            // if adding notes to a chord, add above the upNote of the current chord (topNote in common litterature)
             Element* el = selection().element();
             if (addFlag && el && el->isNote()) {
                   Chord* chord = toNote(el)->chord();
@@ -3582,7 +3582,7 @@ void Score::cmdAddPitch(const EditData& ed, int note, bool addFlag, bool insert)
                   if (note <= tpc2step(tpc))
                         octave++;
                   }
-            else {
+            else { // if not adding notes to a chord
                   int curPitch = 60;
                   if (is.segment()) {
                         Staff* staff = Score::staff(is.track() / VOICES);

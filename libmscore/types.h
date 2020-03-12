@@ -341,6 +341,16 @@ enum class Placement {
       };
 
 //---------------------------------------------------------
+//   HPlacement
+//---------------------------------------------------------
+
+enum class HPlacement {
+      ///.\{
+      LEFT, CENTER, RIGHT
+      ///\}
+      };
+
+//---------------------------------------------------------
 //   OffsetType
 //---------------------------------------------------------
 
@@ -531,6 +541,7 @@ Q_ENUM_NS(Direction);
 Q_ENUM_NS(GlissandoType);
 Q_ENUM_NS(GlissandoStyle);
 Q_ENUM_NS(Placement);
+Q_ENUM_NS(HPlacement);
 Q_ENUM_NS(SegmentType);
 Q_ENUM_NS(Tid);
 Q_ENUM_NS(Align);

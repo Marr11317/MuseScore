@@ -822,6 +822,7 @@ static const StyleType styleTypes[] {
       { Sid::measureNumberColor,            "measureNumberColor",           QColor(0, 0, 0, 255) },
       { Sid::measureNumberOffset,           "measureNumberOffset",          QPointF(0.0, -2.0) },
       { Sid::measureNumberOffsetType,       "measureNumberOffsetType",      int(OffsetType::SPATIUM)   },
+      { Sid::measureNumberVPlacement,       "measureNumberVPlacement",      int(Placement::ABOVE) },
       { Sid::measureNumberAlign,            "measureNumberAlign",           QVariant::fromValue(Align::HCENTER | Align::BASELINE) },
       { Sid::measureNumberFrameType,        "measureNumberFrameType",       int(FrameType::NO_FRAME) },
       { Sid::measureNumberFramePadding,     "measureNumberFramePadding",    0.2 },

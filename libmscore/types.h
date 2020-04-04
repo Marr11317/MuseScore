@@ -29,6 +29,8 @@ Q_NAMESPACE
 ///   The value of this enum determines the "stacking order"
 ///   of elements on the canvas.
 ///   Note: keep in sync with array elementNames[] in scoreElement.cpp
+///         and EditStyle::PAGES in edistyle.cpp
+///         and the list of CONVERT macros in scoreElement.h
 //-------------------------------------------------------------------
 
 enum class ElementType {
@@ -41,6 +43,7 @@ enum class ElementType {
       SYMBOL,
       TEXT,
       MEASURE_NUMBER,
+//      MMREST_RANGE,
       INSTRUMENT_NAME,
       SLUR_SEGMENT,
       TIE_SEGMENT,
@@ -351,6 +354,17 @@ enum class HPlacement {
       };
 
 //---------------------------------------------------------
+//   MMRestRangeBracketType
+//---------------------------------------------------------
+
+enum class MMRestRangeBracketType {
+      ///.\{
+      BRACKETS, PARENTHESES, NONE
+      ///\}
+      };
+
+
+//---------------------------------------------------------
 //   OffsetType
 //---------------------------------------------------------
 
@@ -424,6 +438,7 @@ enum class Tid {
       TEMPO,
       METRONOME,
       MEASURE_NUMBER,
+      MMREST_RANGE,
       TRANSLATOR,
       TUPLET,
       SYSTEM,

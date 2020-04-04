@@ -31,7 +31,8 @@ static const ElementStyle measureNumberStyle {
 //   MeasureNumber
 //---------------------------------------------------------
 
-MeasureNumber::MeasureNumber(Score* s) : TextBase(s, Tid::MEASURE_NUMBER)
+MeasureNumber::MeasureNumber(Score* s, Tid tid)
+      : TextBase(s, tid)
       {
       setFlag(ElementFlag::ON_STAFF, true);
       initElementStyle(&measureNumberStyle);
@@ -92,10 +93,6 @@ QVariant MeasureNumber::propertyDefault(Pid id) const
       switch(id) {
             case Pid::SUB_STYLE:
                   return int(Tid::MEASURE_NUMBER);
-            case Pid::PLACEMENT:
-                  return score()->styleV(Sid::measureNumberVPlacement);
-            case Pid::HPLACEMENT:
-                  return score()->styleV(Sid::measureNumberHPlacement);;
             default:
                   return TextBase::propertyDefault(id);
             }

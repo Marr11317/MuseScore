@@ -66,6 +66,7 @@
 #include "system.h"
 #include "tempotext.h"
 #include "measurenumber.h"
+#include "mmrestrange.h"
 #include "tie.h"
 #include "tiemap.h"
 #include "timesig.h"
@@ -433,7 +434,7 @@ AccidentalVal Measure::findAccidental(Segment* s, int staffIdx, int line, bool &
 
 //---------------------------------------------------------
 //   tick2pos
-//    return x position for tick relative to System
+///    return x position for tick relative to System
 //---------------------------------------------------------
 
 qreal Measure::tick2pos(Fraction tck) const
@@ -486,6 +487,10 @@ bool Measure::showsMeasureNumberInAutoMode()
       if (irregular())
             return false;
 
+      // MMRests have an option to show the measure number range
+      if (isMMRest())
+            return score()->styleB(Sid::mmRestShowMeasureNumberRange);
+
       // Measure numbers should not show on first measure unless specified with Sid::showMeasureNumberOne
       if (!no())
             return score()->styleB(Sid::showMeasureNumberOne);
@@ -536,8 +541,12 @@ void Measure::layoutMeasureNumber()
       bool smn = showsMeasureNumber();
 
       QString s;
-      if (smn)
-            s = QString("%1").arg(no() + 1);
+      if (smn) {
+            if (isMMRest())
+                  s = QString("%1–%2").arg(no() + 1).arg(no() + mmRestCount()); // middle char is an en dash (not em)
+            else
+                  s = QString("%1").arg(no() + 1);
+      }
       unsigned nn = 1;
       bool nas = score()->styleB(Sid::measureNumberAllStaves);
 
@@ -560,12 +569,17 @@ void Measure::layoutMeasureNumber()
                   t->setTrack(staffIdx * VOICES);
             if (smn && ((staffIdx == nn) || nas)) {
                   if (t == 0) {
-                        t = new MeasureNumber(score());
+                        if (isMMRest())
+                              t = new MMRestRange(score());
+                        else
+                              t = new MeasureNumber(score());
                         t->setTrack(staffIdx * VOICES);
                         t->setGenerated(true);
                         t->setParent(this);
                         add(t);
                         }
+                  // in the case of a mmrest range, setXmlText is overriden to take care
+                  // of special bracketing
                   t->setXmlText(s);
                   t->layout();
                   }

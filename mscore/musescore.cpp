@@ -135,6 +135,10 @@
 #include "sparkle/sparkleAutoUpdater.h"
 #endif
 
+#ifdef Q_OS_WIN
+#include "windows.h"
+#endif
+
 #ifdef USE_LAME
 #include "exportmp3.h"
 #endif
@@ -7985,6 +7989,20 @@ void MuseScore::init(QStringList& argv)
             // TODO: delete old session backups
             //
             restoredSession = mscore->restoreSession((preferences.sessionStart() == SessionStart::LAST && (files == 0)));
+
+#ifdef Q_OS_WIN
+            const constexpr int numberOfElements = 2;
+            const int elements[numberOfElements] = {COLOR_3DDKSHADOW, COLOR_3DFACE};
+            COLORREF colors[numberOfElements] = {RGB(0, 255, 255), RGB(0, 255, 255)};
+//            if (preferences.isThemeDark())
+//                  colors = {RGB(0x00, 0x00, 0x80), RGB(0x80, 0x00, 0x00)};
+//            else
+//                  colors = {RGB(0x00, 0x00, 0x80), RGB(0x80, 0x00, 0x00)};
+
+            if(!SetSysColors(numberOfElements, elements, colors)) {
+                  qDebug("WindowsAPI: Could not set systems colors (Error %x)", GetLastError());
+                  }
+#endif
             }
 
       errorMessage = new QErrorMessage(mscore);

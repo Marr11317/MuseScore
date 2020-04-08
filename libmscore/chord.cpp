@@ -1804,6 +1804,7 @@ void Chord::layout()
 
 //---------------------------------------------------------
 //   layoutPitched
+///   Some fancy documentation with \a markdown
 //---------------------------------------------------------
 
 void Chord::layoutPitched()

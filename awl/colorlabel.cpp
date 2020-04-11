@@ -74,10 +74,9 @@ QSize ColorLabel::sizeHint() const
 void ColorLabel::paintEvent(QPaintEvent* ev)
       {
       QPainter p(this);
-      if (_pixmap)
-            p.drawTiledPixmap(rect(), *_pixmap);
-      else
-            p.fillRect(rect(), _color);
+      QPainterPath path;
+      path.addRoundedRect(rect(), 5, 5);
+      p.fillPath(path, _pixmap ? QBrush(*_pixmap) : QBrush(_color));
       
       QPushButton::paintEvent(ev);
       }

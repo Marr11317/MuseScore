@@ -26,6 +26,8 @@
 #include "libmscore/mscore.h"
 #include "miconengine.h"
 
+#include <QString>
+
 namespace Ms {
 
 extern QString iconPath;
@@ -182,9 +184,9 @@ void genIcons()
                   }
             }
 
-      static const char* vtext[VOICES] = { "1","2","3","4" };
       int iw = preferences.getInt(PREF_UI_THEME_ICONHEIGHT) * 2 / 3; // 16;
       int ih = preferences.getInt(PREF_UI_THEME_ICONHEIGHT);   // 24;
+      // if the number of voices is ever changed, be sure to modify the number of voices in enum class Icons
       for (int i = 0; i < VOICES; ++i) {
             icons[int(Icons::voice1_ICON) + i] = new QIcon;
             QPixmap image(iw, ih);
@@ -195,7 +197,7 @@ void genIcons()
             painter.setRenderHint(QPainter::Antialiasing);
             painter.setRenderHint(QPainter::TextAntialiasing);
             painter.setPen(QPen(Qt::black));
-            painter.drawText(QRect(0, 0, iw, ih), Qt::AlignCenter, vtext[i]);
+            painter.drawText(QRect(0, 0, iw, ih), Qt::AlignCenter, QString::number(i + 1));
             painter.end();
             icons[int(Icons::voice1_ICON) +i]->addPixmap(image);
 
@@ -203,7 +205,7 @@ void genIcons()
             c = QColor(MScore::selectColor[i].lighter(140));
             painter.fillRect(0, 0, iw, ih, c);
             painter.setPen(QPen(Qt::black));
-            painter.drawText(QRect(0, 0, iw, ih), Qt::AlignCenter, vtext[i]);
+            painter.drawText(QRect(0, 0, iw, ih), Qt::AlignCenter, QString::number(i + 1));
             painter.end();
             icons[int(Icons::voice1_ICON) + i]->addPixmap(image, QIcon::Normal, QIcon::On);
             }

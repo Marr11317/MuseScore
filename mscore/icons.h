@@ -20,6 +20,8 @@
 #ifndef __ICONS_H__
 #define __ICONS_H__
 
+#include "libmscore/mscore.h"
+
 namespace Ms {
 
 extern void genIcons();
@@ -60,9 +62,12 @@ enum class Icons : short { Invalid_ICON = -1,
       mail_ICON, bug_ICON, bin_ICON,
       noteTimewise_ICON,
       arrowsMoveToTop_ICON,
-      voice1_ICON, voice2_ICON, voice3_ICON, voice4_ICON,
+      voice1_ICON, voice2_ICON, voice3_ICON, voice4_ICON, // keep in sync with VOICES
       ICONS
       };
+
+// check at compile time if the number of voices has changed
+static_assert(VOICES == 4, "The number of voices has been modified. Keep it in sync with the number of voice icons");
 
 extern QIcon* icons[];
 

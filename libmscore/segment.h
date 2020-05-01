@@ -49,8 +49,8 @@ class System;
 
 class Segment final : public Element {
       SegmentType _segmentType { SegmentType::Invalid };
-      Fraction _tick;  // { Fraction(0, 1) };
-      Fraction _ticks; // { Fraction(0, 1) };
+      Fraction _tick;  // { Fraction(0, 1) }; ///< position in time relative to the measure
+      Fraction _ticks; // { Fraction(0, 1) }; ///< lenght of the segment
       Spatium _extraLeadingSpace;
       qreal _stretch;
 

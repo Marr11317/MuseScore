@@ -1025,30 +1025,39 @@ Harmony* Harmony::findPrev() const
 //---------------------------------------------------------
 Fraction Harmony::ticksTilNext(bool stopAtMeasureEnd) const
       {
+      // seg is used to find the tick. tick() could be used instead of seg->tick(),
+      // but it would essentially do the same while requiring more iterations.
       Segment* seg = toSegment(parent());
-      Fraction duration = seg->ticks();
-      Segment* cur = seg->next1();
-      while (cur) {
-            if (stopAtMeasureEnd && (cur->measure() != seg->measure()))
-                  break; //limit by measure end
+      if (!seg)
+            return Fraction(0, 1);
 
-            //find harmony on same track
-            Element* e = cur->findAnnotation(ElementType::HARMONY,
-                                       track(), track());
-            if (e) {
-                  //we have found the next chord symbol
-                  //set duration to the difference between
-                  //the two chord symbols
-                  duration = e->tick() - tick();
-                  break;
-                  }
-            //keep adding the duration of the current segment
-            //in case we are not able to find a next
-            //chord symbol
-            duration += cur->ticks();
-            cur = cur->next1();
+      // there is a faster algorithm when stopping at measure end.
+      if (!stopAtMeasureEnd) {
+            Harmony* e = findNext();
+            if (e)
+                  return e->tick() - seg->tick();
+
+            return score()->lastSegment()->tick() - seg->tick();
             }
-      return duration;
+
+      // use next() and not next1(), since next() only returns segments inside the measure.
+      // (nullptr if it is the last segment in the measure)
+      Segment* cur = seg->next();
+      while (cur) {
+            // find harmony on current segment, same track
+            Element* e = cur->findAnnotation(ElementType::HARMONY, track(), track());
+            if (e)
+                  return e->tick() - seg->tick(); // return the tick difference between the two chord symbols
+
+            // stop at the last segment
+            if (!cur->next())
+                  return cur->tick() + cur->ticks() - seg->tick();
+
+            cur = cur->next();
+            }
+
+      // if it is already the last segment, return the length of it.
+      return seg->ticks();
       }
 
 //---------------------------------------------------------

@@ -207,6 +207,8 @@ void Segment::init()
 
 //---------------------------------------------------------
 //   tick
+///   tick relative to the score
+///   compare with rtick() that is relative to the measure
 //---------------------------------------------------------
 
 Fraction Segment::tick() const

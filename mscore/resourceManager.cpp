@@ -348,7 +348,7 @@ void ResourceManager::downloadLanguage()
         zipFile.close();
         if (result) {
             QFile::remove(localPath);
-            button->setText(tr("Updated"));
+            button->setText(tr("Up to date"));
             //  retranslate the UI if current language is updated
             if (dta == languageButtonMap.first()) {
                 setMscoreLocale(localeName);

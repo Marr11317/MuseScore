@@ -191,6 +191,7 @@ public:
     void setUserStretch(qreal v) { m_userStretch = v; }
 
     void stretchMeasure(qreal stretch);
+    qreal computeRythmicStretch(const int ticks, const int refticks);
     Fraction computeTicks();
     void layout2();
 

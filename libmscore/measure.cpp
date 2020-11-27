@@ -3521,8 +3521,8 @@ void Measure::stretchMeasure(qreal targetWidth)
         }
         Fraction t = s.ticks();
         if (t.isNotZero()) {
-            qreal str = 1.0 + 0.865617 * log(qreal(t.ticks()) / qreal(minTick.ticks()));       // .6 * log(t / minTick.ticks()) / log(2);
-            qreal d   = s.width() / str;
+            qreal str = computeRythmicStretch(t.ticks(), minTick.ticks());
+            qreal d = s.width() / str;
             s.setStretch(str);
             springs.insert(std::pair<qreal, Segment*>(d, &s));
         }
@@ -3647,6 +3647,20 @@ void Measure::stretchMeasure(qreal targetWidth)
     }
 }
 
+qreal Measure::computeRythmicStretch(const int ticks, const int refTicks)
+{
+    bool originalFormula = false;
+    bool fixedRatio = true;
+    qreal ratio = 1.4142;
+    bool lookupTableFormula = false;
+
+    if (originalFormula) {
+        return 1.0 + 0.865617 * log(qreal(ticks) / qreal(refTicks)); // .6 * log(t / minTick.ticks()) / log(2);
+    }
+    if (fixedRatio) {
+        return pow(ratio, log2(qreal(ticks) / qreal(refTicks)));
+    }
+}
 //---------------------------------------------------
 //    computeTicks
 //    set ticks for all segments

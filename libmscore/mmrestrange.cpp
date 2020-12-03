@@ -47,6 +47,8 @@ MMRestRange::MMRestRange(Score* s) : MeasureNumberBase(s, Tid::MMREST_RANGE)
 MMRestRange::MMRestRange(const MMRestRange& other) : MeasureNumberBase(other)
       {
       initElementStyle(&mmRestRangeStyle);
+
+      setBracketType(other.bracketType());
       }
 
 
